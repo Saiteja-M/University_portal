@@ -54,3 +54,6 @@ id_ed25519
 
 # Local audit and diagnostic output
 frontend/production-audit.txt
+
+# Local audit and diagnostic output
+frontend/production-audit.txt
