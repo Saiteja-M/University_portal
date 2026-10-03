@@ -1,0 +1,56 @@
+﻿# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Django and local databases
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+
+# Node and frontend builds
+node_modules/
+dist/
+.vite/
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Nested environment files and virtual environments
+**/.env
+**/.env.*
+!**/.env.example
+**/.venv/
+**/venv/
+
+# Local databases and backups
+**/db.sqlite3
+**/*.sqlite3
+**/*.db
+**/*.dump
+**/*.bak
+
+# Private keys and certificates
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Local audit and diagnostic output
+frontend/production-audit.txt

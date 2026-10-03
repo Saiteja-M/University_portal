@@ -1,0 +1,4357 @@
+openapi: 3.0.3
+info:
+  title: University Portal API
+  version: 1.0.0
+  description: REST API for the University Management Portal
+paths:
+  /api/v1/academics/academic-years/:
+    get:
+      operationId: v1_academics_academic_years_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: is_current
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAcademicYearList'
+          description: ''
+    post:
+      operationId: v1_academics_academic_years_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+  /api/v1/academics/academic-years/{id}/:
+    get:
+      operationId: v1_academics_academic_years_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    put:
+      operationId: v1_academics_academic_years_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcademicYearRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    patch:
+      operationId: v1_academics_academic_years_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYearRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYearRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYearRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    delete:
+      operationId: v1_academics_academic_years_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/academics/courses/:
+    get:
+      operationId: v1_academics_courses_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: credits
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: regulation
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester
+        schema:
+          type: integer
+      - in: query
+        name: semester__program
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseList'
+          description: ''
+    post:
+      operationId: v1_academics_courses_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/v1/academics/courses/{id}/:
+    get:
+      operationId: v1_academics_courses_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: v1_academics_courses_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CourseRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: v1_academics_courses_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourseRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: v1_academics_courses_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/academics/departments/:
+    get:
+      operationId: v1_academics_departments_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDepartmentList'
+          description: ''
+    post:
+      operationId: v1_academics_departments_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+          description: ''
+  /api/v1/academics/departments/{id}/:
+    get:
+      operationId: v1_academics_departments_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this department.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+          description: ''
+    put:
+      operationId: v1_academics_departments_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this department.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DepartmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+          description: ''
+    patch:
+      operationId: v1_academics_departments_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this department.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDepartmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDepartmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDepartmentRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+          description: ''
+    delete:
+      operationId: v1_academics_departments_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this department.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/academics/programs/:
+    get:
+      operationId: v1_academics_programs_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: department
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProgramList'
+          description: ''
+    post:
+      operationId: v1_academics_programs_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+          description: ''
+  /api/v1/academics/programs/{id}/:
+    get:
+      operationId: v1_academics_programs_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this program.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+          description: ''
+    put:
+      operationId: v1_academics_programs_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this program.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProgramRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+          description: ''
+    patch:
+      operationId: v1_academics_programs_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this program.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProgramRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProgramRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProgramRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Program'
+          description: ''
+    delete:
+      operationId: v1_academics_programs_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this program.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/academics/regulations/:
+    get:
+      operationId: v1_academics_regulations_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: program
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: start_year
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRegulationList'
+          description: ''
+    post:
+      operationId: v1_academics_regulations_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regulation'
+          description: ''
+  /api/v1/academics/regulations/{id}/:
+    get:
+      operationId: v1_academics_regulations_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this regulation.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regulation'
+          description: ''
+    put:
+      operationId: v1_academics_regulations_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this regulation.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegulationRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regulation'
+          description: ''
+    patch:
+      operationId: v1_academics_regulations_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this regulation.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRegulationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRegulationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRegulationRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regulation'
+          description: ''
+    delete:
+      operationId: v1_academics_regulations_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this regulation.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/academics/semesters/:
+    get:
+      operationId: v1_academics_semesters_list
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: query
+        name: academic_year
+        schema:
+          type: integer
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: number
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: program
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester_type
+        schema:
+          type: string
+          enum:
+          - EVEN
+          - ODD
+        description: |-
+          * `ODD` - Odd
+          * `EVEN` - Even
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSemesterList'
+          description: ''
+    post:
+      operationId: v1_academics_semesters_create
+      description: Provides role-based access for Academics APIs.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
+          description: ''
+  /api/v1/academics/semesters/{id}/:
+    get:
+      operationId: v1_academics_semesters_retrieve
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this semester.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
+          description: ''
+    put:
+      operationId: v1_academics_semesters_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this semester.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SemesterRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
+          description: ''
+    patch:
+      operationId: v1_academics_semesters_partial_update
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this semester.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSemesterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSemesterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSemesterRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Semester'
+          description: ''
+    delete:
+      operationId: v1_academics_semesters_destroy
+      description: Provides role-based access for Academics APIs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this semester.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/login/:
+    post:
+      operationId: v1_auth_login_create
+      description: Authenticate a user and return an API token.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          description: ''
+        '400':
+          description: Invalid username or password.
+  /api/v1/auth/me/:
+    get:
+      operationId: v1_auth_me_retrieve
+      description: Return information about the currently authenticated user.
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/authorization/userprofile/:
+    get:
+      operationId: v1_authorization_userprofile_retrieve
+      description: Test endpoint for UserProfile RBAC authorization.
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          description: UserProfile permission check succeeded.
+        '403':
+          description: User lacks UserProfile permission.
+  /api/v1/faculty/course-assignments/:
+    get:
+      operationId: v1_faculty_course_assignments_list
+      description: API endpoint for assigning faculty members to courses.
+      parameters:
+      - in: query
+        name: academic_year
+        schema:
+          type: integer
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - in: query
+        name: faculty
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: role
+        schema:
+          type: string
+          enum:
+          - CO_FACULTY
+          - LAB_FACULTY
+          - PRIMARY
+        description: |-
+          * `PRIMARY` - Primary Faculty
+          * `CO_FACULTY` - Co-Faculty
+          * `LAB_FACULTY` - Lab Faculty
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFacultyCourseAssignmentList'
+          description: ''
+    post:
+      operationId: v1_faculty_course_assignments_create
+      description: API endpoint for assigning faculty members to courses.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyCourseAssignment'
+          description: ''
+  /api/v1/faculty/course-assignments/{id}/:
+    get:
+      operationId: v1_faculty_course_assignments_retrieve
+      description: API endpoint for assigning faculty members to courses.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty course assignment.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyCourseAssignment'
+          description: ''
+    put:
+      operationId: v1_faculty_course_assignments_update
+      description: API endpoint for assigning faculty members to courses.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty course assignment.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyCourseAssignmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyCourseAssignment'
+          description: ''
+    patch:
+      operationId: v1_faculty_course_assignments_partial_update
+      description: API endpoint for assigning faculty members to courses.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty course assignment.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyCourseAssignmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyCourseAssignmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyCourseAssignmentRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyCourseAssignment'
+          description: ''
+    delete:
+      operationId: v1_faculty_course_assignments_destroy
+      description: API endpoint for assigning faculty members to courses.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty course assignment.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/faculty/faculty/:
+    get:
+      operationId: v1_faculty_faculty_list
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      parameters:
+      - in: query
+        name: department
+        schema:
+          type: integer
+      - in: query
+        name: employment_status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - ON_LEAVE
+          - RESIGNED
+          - RETIRED
+          - TERMINATED
+        description: |-
+          * `ACTIVE` - Active
+          * `ON_LEAVE` - On Leave
+          * `RESIGNED` - Resigned
+          * `RETIRED` - Retired
+          * `TERMINATED` - Terminated
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFacultyList'
+          description: ''
+    post:
+      operationId: v1_faculty_faculty_create
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faculty'
+          description: ''
+  /api/v1/faculty/faculty/{id}/:
+    get:
+      operationId: v1_faculty_faculty_retrieve
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faculty'
+          description: ''
+    put:
+      operationId: v1_faculty_faculty_update
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faculty'
+          description: ''
+    patch:
+      operationId: v1_faculty_faculty_partial_update
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Faculty'
+          description: ''
+    delete:
+      operationId: v1_faculty_faculty_destroy
+      description: |-
+        API endpoint for managing faculty members.
+
+        Supports:
+        - Listing faculty
+        - Retrieving faculty
+        - Creating faculty with an existing user
+        - Creating faculty with a new user
+        - Updating faculty
+        - Deleting faculty
+        - Searching
+        - Filtering
+        - Ordering
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this faculty.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/faculty/profiles/:
+    get:
+      operationId: v1_faculty_profiles_list
+      description: API endpoint for faculty profiles.
+      parameters:
+      - in: query
+        name: city
+        schema:
+          type: string
+      - in: query
+        name: gender
+        schema:
+          type: string
+          enum:
+          - FEMALE
+          - MALE
+          - OTHER
+          - PREFER_NOT_TO_SAY
+        description: |-
+          * `MALE` - Male
+          * `FEMALE` - Female
+          * `OTHER` - Other
+          * `PREFER_NOT_TO_SAY` - Prefer not to say
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: state
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFacultyProfileList'
+          description: ''
+    post:
+      operationId: v1_faculty_profiles_create
+      description: API endpoint for faculty profiles.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyProfile'
+          description: ''
+  /api/v1/faculty/profiles/{id}/:
+    get:
+      operationId: v1_faculty_profiles_retrieve
+      description: API endpoint for faculty profiles.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Faculty Profile.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyProfile'
+          description: ''
+    put:
+      operationId: v1_faculty_profiles_update
+      description: API endpoint for faculty profiles.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Faculty Profile.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FacultyProfileRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyProfile'
+          description: ''
+    patch:
+      operationId: v1_faculty_profiles_partial_update
+      description: API endpoint for faculty profiles.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Faculty Profile.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFacultyProfileRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacultyProfile'
+          description: ''
+    delete:
+      operationId: v1_faculty_profiles_destroy
+      description: API endpoint for faculty profiles.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Faculty Profile.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/health/:
+    get:
+      operationId: v1_health_retrieve
+      description: Basic API health-check endpoint.
+      tags:
+      - v1
+      responses:
+        '200':
+          description: University Portal API is healthy.
+  /api/v1/students/enrollments/:
+    get:
+      operationId: v1_students_enrollments_list
+      parameters:
+      - in: query
+        name: academic_year
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: semester
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - COMPLETED
+          - WITHDRAWN
+        description: |-
+          * `ACTIVE` - Active
+          * `COMPLETED` - Completed
+          * `WITHDRAWN` - Withdrawn
+      - in: query
+        name: student
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnrollmentList'
+          description: ''
+    post:
+      operationId: v1_students_enrollments_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+  /api/v1/students/enrollments/{id}/:
+    get:
+      operationId: v1_students_enrollments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this enrollment.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    put:
+      operationId: v1_students_enrollments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this enrollment.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    patch:
+      operationId: v1_students_enrollments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this enrollment.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollmentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollmentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollmentRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    delete:
+      operationId: v1_students_enrollments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this enrollment.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/students/guardians/:
+    get:
+      operationId: v1_students_guardians_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: relationship
+        schema:
+          type: string
+          enum:
+          - FATHER
+          - GUARDIAN
+          - MOTHER
+          - OTHER
+        description: |-
+          * `FATHER` - Father
+          * `MOTHER` - Mother
+          * `GUARDIAN` - Guardian
+          * `OTHER` - Other
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGuardianList'
+          description: ''
+    post:
+      operationId: v1_students_guardians_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardian'
+          description: ''
+  /api/v1/students/guardians/{id}/:
+    get:
+      operationId: v1_students_guardians_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guardian.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardian'
+          description: ''
+    put:
+      operationId: v1_students_guardians_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guardian.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/GuardianRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardian'
+          description: ''
+    patch:
+      operationId: v1_students_guardians_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guardian.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardianRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardianRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedGuardianRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Guardian'
+          description: ''
+    delete:
+      operationId: v1_students_guardians_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this guardian.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/students/profiles/:
+    get:
+      operationId: v1_students_profiles_list
+      parameters:
+      - in: query
+        name: blood_group
+        schema:
+          type: string
+          enum:
+          - A+
+          - A-
+          - AB+
+          - AB-
+          - B+
+          - B-
+          - O+
+          - O-
+        description: |-
+          * `A+` - A+
+          * `A-` - A-
+          * `B+` - B+
+          * `B-` - B-
+          * `AB+` - AB+
+          * `AB-` - AB-
+          * `O+` - O+
+          * `O-` - O-
+      - in: query
+        name: gender
+        schema:
+          type: string
+          enum:
+          - FEMALE
+          - MALE
+          - OTHER
+        description: |-
+          * `MALE` - Male
+          * `FEMALE` - Female
+          * `OTHER` - Other
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudentProfileList'
+          description: ''
+    post:
+      operationId: v1_students_profiles_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+  /api/v1/students/profiles/{id}/:
+    get:
+      operationId: v1_students_profiles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student profile.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+    put:
+      operationId: v1_students_profiles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student profile.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentProfileRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+    patch:
+      operationId: v1_students_profiles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student profile.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentProfileRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+          description: ''
+    delete:
+      operationId: v1_students_profiles_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student profile.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/students/students/:
+    get:
+      operationId: v1_students_students_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: program
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - DROPPED
+          - GRADUATED
+          - INACTIVE
+          - SUSPENDED
+        description: |-
+          * `ACTIVE` - Active
+          * `INACTIVE` - Inactive
+          * `GRADUATED` - Graduated
+          * `SUSPENDED` - Suspended
+          * `DROPPED` - Dropped
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudentList'
+          description: ''
+    post:
+      operationId: v1_students_students_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+  /api/v1/students/students/{id}/:
+    get:
+      operationId: v1_students_students_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    put:
+      operationId: v1_students_students_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudentRequest'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    patch:
+      operationId: v1_students_students_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStudentRequest'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+          description: ''
+    delete:
+      operationId: v1_students_students_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this student.
+        required: true
+      tags:
+      - v1
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AcademicYear:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 20
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        is_current:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - end_date
+      - id
+      - name
+      - start_date
+      - updated_at
+    AcademicYearRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 20
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        is_current:
+          type: boolean
+      required:
+      - end_date
+      - name
+      - start_date
+    BlankEnum:
+      enum:
+      - ''
+    BloodGroupEnum:
+      enum:
+      - A+
+      - A-
+      - B+
+      - B-
+      - AB+
+      - AB-
+      - O+
+      - O-
+      type: string
+      description: |-
+        * `A+` - A+
+        * `A-` - A-
+        * `B+` - B+
+        * `B-` - B-
+        * `AB+` - AB+
+        * `AB-` - AB-
+        * `O+` - O+
+        * `O-` - O-
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        semester:
+          type: integer
+        semester_number:
+          type: integer
+          readOnly: true
+        program_name:
+          type: string
+          readOnly: true
+        regulation:
+          type: integer
+        regulation_code:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        name:
+          type: string
+          maxLength: 200
+        credits:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - program_name
+      - regulation
+      - regulation_code
+      - semester
+      - semester_number
+      - updated_at
+    CourseRequest:
+      type: object
+      properties:
+        semester:
+          type: integer
+        regulation:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        credits:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+      required:
+      - code
+      - name
+      - regulation
+      - semester
+    Department:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - updated_at
+    DepartmentRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        description:
+          type: string
+        is_active:
+          type: boolean
+      required:
+      - code
+      - name
+    EmploymentStatusEnum:
+      enum:
+      - ACTIVE
+      - ON_LEAVE
+      - RESIGNED
+      - RETIRED
+      - TERMINATED
+      type: string
+      description: |-
+        * `ACTIVE` - Active
+        * `ON_LEAVE` - On Leave
+        * `RESIGNED` - Resigned
+        * `RETIRED` - Retired
+        * `TERMINATED` - Terminated
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+        student_id:
+          type: string
+          readOnly: true
+        academic_year:
+          type: integer
+        academic_year_name:
+          type: string
+          readOnly: true
+        semester:
+          type: integer
+        semester_number:
+          type: integer
+          readOnly: true
+        year_of_study:
+          type: integer
+          readOnly: true
+        program_name:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusE09Enum'
+        enrollment_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - academic_year
+      - academic_year_name
+      - created_at
+      - enrollment_date
+      - id
+      - program_name
+      - semester
+      - semester_number
+      - student
+      - student_id
+      - updated_at
+      - year_of_study
+    EnrollmentRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        academic_year:
+          type: integer
+        semester:
+          type: integer
+        status:
+          $ref: '#/components/schemas/StatusE09Enum'
+        enrollment_date:
+          type: string
+          format: date
+      required:
+      - academic_year
+      - enrollment_date
+      - semester
+      - student
+    EnrollmentStatusEnum:
+      enum:
+      - ACTIVE
+      - COMPLETED
+      - WITHDRAWN
+      type: string
+      description: |-
+        * `ACTIVE` - Active
+        * `COMPLETED` - Completed
+        * `WITHDRAWN` - Withdrawn
+    Faculty:
+      type: object
+      description: |-
+        Serializer for Faculty records.
+
+        Supports two creation workflows:
+
+        1. Existing user:
+           {
+               "user": 12,
+               ...
+           }
+
+        2. New user:
+           {
+               "create_username": "...",
+               "create_password": "...",
+               ...
+           }
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        username:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        employee_id:
+          type: string
+          maxLength: 50
+        employee_name:
+          type: string
+          readOnly: true
+        department:
+          type: integer
+        department_name:
+          type: string
+          readOnly: true
+        designation:
+          type: string
+          maxLength: 100
+        joining_date:
+          type: string
+          format: date
+        employment_status:
+          $ref: '#/components/schemas/EmploymentStatusEnum'
+        is_active:
+          type: boolean
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/FacultyProfile'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - department
+      - department_name
+      - designation
+      - email
+      - employee_id
+      - employee_name
+      - id
+      - joining_date
+      - profile
+      - updated_at
+      - username
+    FacultyCourseAssignment:
+      type: object
+      description: Serializer for assigning faculty members to courses.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        faculty:
+          type: integer
+        faculty_employee_id:
+          type: string
+          readOnly: true
+        faculty_name:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+        course_code:
+          type: string
+          readOnly: true
+        course_name:
+          type: string
+          readOnly: true
+        academic_year:
+          type: integer
+        academic_year_name:
+          type: string
+          readOnly: true
+        semester:
+          type: integer
+        semester_number:
+          type: integer
+          readOnly: true
+        department_name:
+          type: string
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - academic_year
+      - academic_year_name
+      - course
+      - course_code
+      - course_name
+      - created_at
+      - department_name
+      - faculty
+      - faculty_employee_id
+      - faculty_name
+      - id
+      - semester
+      - semester_number
+      - updated_at
+    FacultyCourseAssignmentRequest:
+      type: object
+      description: Serializer for assigning faculty members to courses.
+      properties:
+        faculty:
+          type: integer
+        course:
+          type: integer
+        academic_year:
+          type: integer
+        semester:
+          type: integer
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - academic_year
+      - course
+      - faculty
+      - semester
+    FacultyProfile:
+      type: object
+      description: Serializer for faculty personal profiles.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        faculty:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/FacultyProfileGenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - faculty
+      - id
+      - updated_at
+    FacultyProfileGenderEnum:
+      enum:
+      - MALE
+      - FEMALE
+      - OTHER
+      - PREFER_NOT_TO_SAY
+      type: string
+      description: |-
+        * `MALE` - Male
+        * `FEMALE` - Female
+        * `OTHER` - Other
+        * `PREFER_NOT_TO_SAY` - Prefer not to say
+    FacultyProfileRequest:
+      type: object
+      description: Serializer for faculty personal profiles.
+      properties:
+        faculty:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/FacultyProfileGenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+      required:
+      - faculty
+    FacultyRequest:
+      type: object
+      description: |-
+        Serializer for Faculty records.
+
+        Supports two creation workflows:
+
+        1. Existing user:
+           {
+               "user": 12,
+               ...
+           }
+
+        2. New user:
+           {
+               "create_username": "...",
+               "create_password": "...",
+               ...
+           }
+      properties:
+        user:
+          type: integer
+        create_username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        create_first_name:
+          type: string
+          writeOnly: true
+        create_last_name:
+          type: string
+          writeOnly: true
+        create_email:
+          writeOnly: true
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        employee_id:
+          type: string
+          minLength: 1
+          maxLength: 50
+        department:
+          type: integer
+        designation:
+          type: string
+          minLength: 1
+          maxLength: 100
+        joining_date:
+          type: string
+          format: date
+        employment_status:
+          $ref: '#/components/schemas/EmploymentStatusEnum'
+        is_active:
+          type: boolean
+      required:
+      - department
+      - designation
+      - employee_id
+      - joining_date
+    Guardian:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+        name:
+          type: string
+          maxLength: 150
+        relationship:
+          $ref: '#/components/schemas/RelationshipEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        occupation:
+          type: string
+          maxLength: 150
+        address:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - phone_number
+      - relationship
+      - student
+      - updated_at
+    GuardianRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        relationship:
+          $ref: '#/components/schemas/RelationshipEnum'
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 20
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        occupation:
+          type: string
+          maxLength: 150
+        address:
+          type: string
+      required:
+      - name
+      - phone_number
+      - relationship
+      - student
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        username:
+          type: string
+        user_id:
+          type: integer
+      required:
+      - token
+      - user_id
+      - username
+    PaginatedAcademicYearList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AcademicYear'
+    PaginatedCourseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    PaginatedDepartmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+    PaginatedEnrollmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Enrollment'
+    PaginatedFacultyCourseAssignmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacultyCourseAssignment'
+    PaginatedFacultyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Faculty'
+    PaginatedFacultyProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacultyProfile'
+    PaginatedGuardianList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guardian'
+    PaginatedProgramList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Program'
+    PaginatedRegulationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Regulation'
+    PaginatedSemesterList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Semester'
+    PaginatedStudentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+    PaginatedStudentProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentProfile'
+    PatchedAcademicYearRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 20
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        is_current:
+          type: boolean
+    PatchedCourseRequest:
+      type: object
+      properties:
+        semester:
+          type: integer
+        regulation:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        credits:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+    PatchedDepartmentRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        description:
+          type: string
+        is_active:
+          type: boolean
+    PatchedEnrollmentRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        academic_year:
+          type: integer
+        semester:
+          type: integer
+        status:
+          $ref: '#/components/schemas/StatusE09Enum'
+        enrollment_date:
+          type: string
+          format: date
+    PatchedFacultyCourseAssignmentRequest:
+      type: object
+      description: Serializer for assigning faculty members to courses.
+      properties:
+        faculty:
+          type: integer
+        course:
+          type: integer
+        academic_year:
+          type: integer
+        semester:
+          type: integer
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+    PatchedFacultyProfileRequest:
+      type: object
+      description: Serializer for faculty personal profiles.
+      properties:
+        faculty:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/FacultyProfileGenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+    PatchedFacultyRequest:
+      type: object
+      description: |-
+        Serializer for Faculty records.
+
+        Supports two creation workflows:
+
+        1. Existing user:
+           {
+               "user": 12,
+               ...
+           }
+
+        2. New user:
+           {
+               "create_username": "...",
+               "create_password": "...",
+               ...
+           }
+      properties:
+        user:
+          type: integer
+        create_username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        create_first_name:
+          type: string
+          writeOnly: true
+        create_last_name:
+          type: string
+          writeOnly: true
+        create_email:
+          writeOnly: true
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        employee_id:
+          type: string
+          minLength: 1
+          maxLength: 50
+        department:
+          type: integer
+        designation:
+          type: string
+          minLength: 1
+          maxLength: 100
+        joining_date:
+          type: string
+          format: date
+        employment_status:
+          $ref: '#/components/schemas/EmploymentStatusEnum'
+        is_active:
+          type: boolean
+    PatchedGuardianRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        relationship:
+          $ref: '#/components/schemas/RelationshipEnum'
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 20
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        occupation:
+          type: string
+          maxLength: 150
+        address:
+          type: string
+    PatchedProgramRequest:
+      type: object
+      properties:
+        department:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        duration_years:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+    PatchedRegulationRequest:
+      type: object
+      properties:
+        program:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        start_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        end_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        is_active:
+          type: boolean
+    PatchedSemesterRequest:
+      type: object
+      properties:
+        program:
+          type: integer
+        academic_year:
+          type: integer
+        number:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        semester_type:
+          $ref: '#/components/schemas/SemesterTypeEnum'
+        is_active:
+          type: boolean
+    PatchedStudentProfileRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/StudentProfileGenderEnum'
+        blood_group:
+          oneOf:
+          - $ref: '#/components/schemas/BloodGroupEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+    PatchedStudentRequest:
+      type: object
+      properties:
+        student_id:
+          type: string
+          minLength: 1
+          maxLength: 30
+        admission_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        program:
+          type: integer
+        admission_date:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/StudentStatusEnum'
+        create_username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        create_first_name:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_last_name:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_email:
+          type: string
+          format: email
+          writeOnly: true
+          minLength: 1
+        enrollment_academic_year:
+          type: integer
+          writeOnly: true
+        enrollment_semester:
+          type: integer
+          writeOnly: true
+        enrollment_date:
+          type: string
+          format: date
+          writeOnly: true
+        enrollment_status:
+          allOf:
+          - $ref: '#/components/schemas/EnrollmentStatusEnum'
+          writeOnly: true
+          default: ACTIVE
+    Program:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        department:
+          type: integer
+        department_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        name:
+          type: string
+          maxLength: 200
+        duration_years:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - department
+      - department_name
+      - id
+      - name
+      - updated_at
+    ProgramRequest:
+      type: object
+      properties:
+        department:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        duration_years:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        is_active:
+          type: boolean
+      required:
+      - code
+      - department
+      - name
+    Regulation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        program:
+          type: integer
+        program_name:
+          type: string
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        name:
+          type: string
+          maxLength: 100
+        start_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        end_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - id
+      - name
+      - program
+      - program_name
+      - start_year
+      - updated_at
+    RegulationRequest:
+      type: object
+      properties:
+        program:
+          type: integer
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        start_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        end_year:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - code
+      - name
+      - program
+      - start_year
+    RelationshipEnum:
+      enum:
+      - FATHER
+      - MOTHER
+      - GUARDIAN
+      - OTHER
+      type: string
+      description: |-
+        * `FATHER` - Father
+        * `MOTHER` - Mother
+        * `GUARDIAN` - Guardian
+        * `OTHER` - Other
+    RoleEnum:
+      enum:
+      - PRIMARY
+      - CO_FACULTY
+      - LAB_FACULTY
+      type: string
+      description: |-
+        * `PRIMARY` - Primary Faculty
+        * `CO_FACULTY` - Co-Faculty
+        * `LAB_FACULTY` - Lab Faculty
+    Semester:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        program:
+          type: integer
+        program_name:
+          type: string
+          readOnly: true
+        academic_year:
+          type: integer
+        academic_year_name:
+          type: string
+          readOnly: true
+        number:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        semester_type:
+          $ref: '#/components/schemas/SemesterTypeEnum'
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - academic_year
+      - academic_year_name
+      - created_at
+      - id
+      - number
+      - program
+      - program_name
+      - semester_type
+      - updated_at
+    SemesterRequest:
+      type: object
+      properties:
+        program:
+          type: integer
+        academic_year:
+          type: integer
+        number:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        semester_type:
+          $ref: '#/components/schemas/SemesterTypeEnum'
+        is_active:
+          type: boolean
+      required:
+      - academic_year
+      - number
+      - program
+      - semester_type
+    SemesterTypeEnum:
+      enum:
+      - ODD
+      - EVEN
+      type: string
+      description: |-
+        * `ODD` - Odd
+        * `EVEN` - Even
+    StatusE09Enum:
+      enum:
+      - ACTIVE
+      - COMPLETED
+      - WITHDRAWN
+      type: string
+      description: |-
+        * `ACTIVE` - Active
+        * `COMPLETED` - Completed
+        * `WITHDRAWN` - Withdrawn
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student_id:
+          type: string
+          maxLength: 30
+        admission_number:
+          type: string
+          maxLength: 50
+        user:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        program:
+          type: integer
+        program_name:
+          type: string
+          readOnly: true
+        department_name:
+          type: string
+          readOnly: true
+        admission_date:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/StudentStatusEnum'
+        current_enrollment:
+          type: object
+          additionalProperties: {}
+          nullable: true
+          readOnly: true
+        academic_year:
+          type: string
+          nullable: true
+          readOnly: true
+        semester:
+          type: integer
+          nullable: true
+          readOnly: true
+        year_of_study:
+          type: integer
+          nullable: true
+          readOnly: true
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/StudentProfile'
+          readOnly: true
+        guardians:
+          type: array
+          items:
+            $ref: '#/components/schemas/Guardian'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - academic_year
+      - admission_date
+      - admission_number
+      - created_at
+      - current_enrollment
+      - department_name
+      - email
+      - first_name
+      - guardians
+      - id
+      - last_name
+      - profile
+      - program
+      - program_name
+      - semester
+      - student_id
+      - updated_at
+      - user
+      - username
+      - year_of_study
+    StudentProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/StudentProfileGenderEnum'
+        blood_group:
+          oneOf:
+          - $ref: '#/components/schemas/BloodGroupEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - date_of_birth
+      - gender
+      - id
+      - student
+      - updated_at
+    StudentProfileGenderEnum:
+      enum:
+      - MALE
+      - FEMALE
+      - OTHER
+      type: string
+      description: |-
+        * `MALE` - Male
+        * `FEMALE` - Female
+        * `OTHER` - Other
+    StudentProfileRequest:
+      type: object
+      properties:
+        student:
+          type: integer
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/StudentProfileGenderEnum'
+        blood_group:
+          oneOf:
+          - $ref: '#/components/schemas/BloodGroupEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        phone_number:
+          type: string
+          maxLength: 20
+        alternate_phone_number:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        city:
+          type: string
+          maxLength: 100
+        state:
+          type: string
+          maxLength: 100
+        postal_code:
+          type: string
+          maxLength: 20
+      required:
+      - date_of_birth
+      - gender
+      - student
+    StudentRequest:
+      type: object
+      properties:
+        student_id:
+          type: string
+          minLength: 1
+          maxLength: 30
+        admission_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        program:
+          type: integer
+        admission_date:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/StudentStatusEnum'
+        create_username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        create_first_name:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_last_name:
+          type: string
+          writeOnly: true
+          minLength: 1
+        create_email:
+          type: string
+          format: email
+          writeOnly: true
+          minLength: 1
+        enrollment_academic_year:
+          type: integer
+          writeOnly: true
+        enrollment_semester:
+          type: integer
+          writeOnly: true
+        enrollment_date:
+          type: string
+          format: date
+          writeOnly: true
+        enrollment_status:
+          allOf:
+          - $ref: '#/components/schemas/EnrollmentStatusEnum'
+          writeOnly: true
+          default: ACTIVE
+      required:
+      - admission_date
+      - admission_number
+      - create_email
+      - create_first_name
+      - create_last_name
+      - create_password
+      - create_username
+      - program
+      - student_id
+    StudentStatusEnum:
+      enum:
+      - ACTIVE
+      - INACTIVE
+      - GRADUATED
+      - SUSPENDED
+      - DROPPED
+      type: string
+      description: |-
+        * `ACTIVE` - Active
+        * `INACTIVE` - Inactive
+        * `GRADUATED` - Graduated
+        * `SUSPENDED` - Suspended
+        * `DROPPED` - Dropped
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
