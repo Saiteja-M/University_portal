@@ -102,11 +102,13 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
         # -------------------------------------------------
         # Faculty validation
         # -------------------------------------------------
-        if faculty and not faculty.is_active:
+        if (
+            faculty
+            and faculty.status != faculty.Status.ACTIVE
+            ):
             errors["faculty"] = (
-                "The selected faculty member is inactive."
-            )
-
+        "The selected faculty member is not active."
+    )
         # -------------------------------------------------
         # Course validation
         # -------------------------------------------------

@@ -122,6 +122,11 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
         methods=["post"],
         url_path="mark",
     )
+    @action(
+    detail=False,
+    methods=["get"],
+    url_path="class-report",
+)
     def mark(self, request, pk=None):
         session = self.get_object()
 
@@ -330,9 +335,7 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
             if not faculty:
                 return queryset.none()
 
-            queryset = queryset.filter(
-                session__faculty=faculty
-            )
+            queryset = queryset.filter(session__faculty=faculty)
 
         elif role == "STUDENT":
             student = getattr(user, "student", None)
@@ -340,9 +343,7 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
             if not student:
                 return queryset.none()
 
-            queryset = queryset.filter(
-                student=student
-            )
+            queryset = queryset.filter(student=student)
 
         elif role in {"ADMIN", "HOD"}:
             pass
@@ -353,39 +354,28 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
         return queryset
 
     def get_permissions(self):
-        if self.action in {"list", "retrieve"}:
-            permission_classes = [
-                IsAttendanceViewer,
-            ]
+        # Students and faculty can view attendance summaries.
+        # Only authorized managers can modify attendance records.
+        if self.action in {"list", "retrieve", "my_summary"}:
+            permission_classes = [IsAttendanceViewer]
         else:
-            permission_classes = [
-                IsAttendanceManager,
-            ]
+            permission_classes = [IsAttendanceManager]
 
-        return [
-            permission()
-            for permission in permission_classes
-        ]
+        return [permission() for permission in permission_classes]
+
     @action(
         detail=False,
         methods=["get"],
         url_path="my-summary",
     )
     def my_summary(self, request):
-        """
-        Return attendance summary for the currently
-        authenticated student.
-
-        Students can only see their own attendance.
-        """
+        """Return the authenticated student's own attendance summary."""
 
         user = request.user
 
         if not user.is_authenticated:
             return Response(
-                {
-                    "detail": "Authentication credentials were not provided."
-                },
+                {"detail": "Authentication credentials were not provided."},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
@@ -393,12 +383,11 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
 
         if not student:
             return Response(
-                {
-                    "detail": "Your account is not linked to a student profile."
-                },
+                {"detail": "Your account is not linked to a student profile."},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        # get_queryset() already restricts records by the user's role.
         records = (
             self.get_queryset()
             .filter(student=student)
@@ -428,8 +417,11 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
             status=AttendanceRecord.Status.LATE
         ).count()
 
+        # Present and Late both count as attended.
+        attended = present + late
+
         percentage = (
-            round((present / total) * 100, 2)
+            round((attended / total) * 100, 2)
             if total
             else 0
         )
@@ -451,15 +443,12 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
                 }
 
             item = course_data[course.id]
-
             item["total_classes"] += 1
 
             if record.status == AttendanceRecord.Status.PRESENT:
                 item["present"] += 1
-
             elif record.status == AttendanceRecord.Status.ABSENT:
                 item["absent"] += 1
-
             elif record.status == AttendanceRecord.Status.LATE:
                 item["late"] += 1
 
@@ -467,12 +456,10 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
 
         for item in course_data.values():
             course_total = item["total_classes"]
+            course_attended = item["present"] + item["late"]
 
             item["percentage"] = (
-                round(
-                    (item["present"] / course_total) * 100,
-                    2,
-                )
+                round((course_attended / course_total) * 100, 2)
                 if course_total
                 else 0
             )
@@ -512,6 +499,7 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
             },
             status=status.HTTP_200_OK,
         )
+
 class EnrolledStudentViewSet(
     viewsets.ReadOnlyModelViewSet
 ):
