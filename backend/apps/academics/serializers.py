@@ -9,29 +9,24 @@ from .models import (
     Semester,
 )
 
+
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = [
-            "id",
-            "code",
-            "name",
-            "description",
-            "is_active",
-            "created_at",
-            "updated_at",
+            "id", "code", "name", "description", "is_active",
+            "created_at", "updated_at",
         ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "updated_at",
-        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
 
     def validate_code(self, value):
         return value.strip().upper()
 
     def validate_name(self, value):
-        return value.strip()
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Name cannot be blank.")
+        return value
 
 
 class ProgramSerializer(serializers.ModelSerializer):
@@ -43,28 +38,21 @@ class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model = Program
         fields = [
-            "id",
-            "department",
-            "department_name",
-            "code",
-            "name",
-            "duration_years",
-            "is_active",
-            "created_at",
-            "updated_at",
+            "id", "department", "department_name", "code", "name",
+            "duration_years", "is_active", "created_at", "updated_at",
         ]
         read_only_fields = [
-            "id",
-            "department_name",
-            "created_at",
-            "updated_at",
+            "id", "department_name", "created_at", "updated_at",
         ]
 
     def validate_code(self, value):
         return value.strip().upper()
 
     def validate_name(self, value):
-        return value.strip()
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Name cannot be blank.")
+        return value
 
     def validate_duration_years(self, value):
         if value < 1 or value > 10:
@@ -72,7 +60,6 @@ class ProgramSerializer(serializers.ModelSerializer):
                 "Duration must be between 1 and 10 years."
             )
         return value
-
 
 
 class RegulationSerializer(serializers.ModelSerializer):
@@ -84,67 +71,65 @@ class RegulationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Regulation
         fields = [
-            "id",
-            "program",
-            "program_name",
-            "code",
-            "name",
-            "start_year",
-            "end_year",
-            "is_active",
-            "created_at",
-            "updated_at",
+            "id", "program", "program_name", "code", "name",
+            "start_year", "end_year", "is_active",
+            "created_at", "updated_at",
         ]
         read_only_fields = [
-            "id",
-            "program_name",
-            "created_at",
-            "updated_at",
+            "id", "program_name", "created_at", "updated_at",
         ]
 
     def validate_code(self, value):
         return value.strip().upper()
 
     def validate_name(self, value):
-        return value.strip()
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Name cannot be blank.")
+        return value
 
     def validate(self, attrs):
-        start_year = attrs.get("start_year")
-        end_year = attrs.get("end_year")
-
+        start_year = attrs.get(
+            "start_year",
+            getattr(self.instance, "start_year", None),
+        )
+        end_year = attrs.get(
+            "end_year",
+            getattr(self.instance, "end_year", None),
+        )
         if (
             end_year is not None
             and start_year is not None
             and end_year < start_year
         ):
-            raise serializers.ValidationError(
-                "End year must be greater than or equal to start year."
-            )
-
+            raise serializers.ValidationError({
+                "end_year": "End year must be greater than or equal to start year."
+            })
         return attrs
+
+
 class AcademicYearSerializer(serializers.ModelSerializer):
     class Meta:
         model = AcademicYear
         fields = [
-            "id",
-            "name",
-            "start_date",
-            "end_date",
-            "is_current",
-            "created_at",
-            "updated_at",
+            "id", "name", "start_date", "end_date", "is_current",
+            "created_at", "updated_at",
         ]
-        read_only_fields = [
-            "id",
-            "created_at",
-            "updated_at",
-        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
 
     def validate(self, attrs):
-        if attrs["start_date"] >= attrs["end_date"]:
-            raise serializers.ValidationError(
-                "Start date must be before end date."
-            )
+        start_date = attrs.get(
+            "start_date",
+            getattr(self.instance, "start_date", None),
+        )
+        end_date = attrs.get(
+            "end_date",
+            getattr(self.instance, "end_date", None),
+        )
+        if start_date is not None and end_date is not None and start_date >= end_date:
+            raise serializers.ValidationError({
+                "start_date": "Start date must be before end date."
+            })
         return attrs
 
 
@@ -161,23 +146,13 @@ class SemesterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Semester
         fields = [
-            "id",
-            "program",
-            "program_name",
-            "academic_year",
-            "academic_year_name",
-            "number",
-            "semester_type",
-            "is_active",
-            "created_at",
-            "updated_at",
+            "id", "program", "program_name", "academic_year",
+            "academic_year_name", "number", "semester_type",
+            "is_active", "created_at", "updated_at",
         ]
         read_only_fields = [
-            "id",
-            "program_name",
-            "academic_year_name",
-            "created_at",
-            "updated_at",
+            "id", "program_name", "academic_year_name",
+            "created_at", "updated_at",
         ]
 
     def validate_number(self, value):
@@ -187,17 +162,16 @@ class SemesterSerializer(serializers.ModelSerializer):
             )
         return value
 
+
 class CourseSerializer(serializers.ModelSerializer):
     semester_number = serializers.IntegerField(
         source="semester.number",
         read_only=True,
     )
-
     program_name = serializers.CharField(
         source="semester.program.name",
         read_only=True,
     )
-
     regulation_code = serializers.CharField(
         source="regulation.code",
         read_only=True,
@@ -206,53 +180,46 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            "id",
-            "semester",
-            "semester_number",
-            "program_name",
-            "regulation",
-            "regulation_code",
-            "code",
-            "name",
-            "credits",
-            "is_active",
-            "created_at",
-            "updated_at",
+            "id", "semester", "semester_number", "program_name",
+            "regulation", "regulation_code", "code", "name", "credits",
+            "is_active", "created_at", "updated_at",
         ]
         read_only_fields = [
-            "id",
-            "semester_number",
-            "program_name",
-            "regulation_code",
-            "created_at",
-            "updated_at",
+            "id", "semester_number", "program_name", "regulation_code",
+            "created_at", "updated_at",
         ]
 
     def validate_code(self, value):
         return value.strip().upper()
 
     def validate_name(self, value):
-        return value.strip()
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Name cannot be blank.")
+        return value
 
     def validate_credits(self, value):
         if value < 0 or value > 30:
             raise serializers.ValidationError(
                 "Credits must be between 0 and 30."
             )
-
         return value
 
     def validate(self, attrs):
-        semester = attrs.get("semester")
-        regulation = attrs.get("regulation")
+        semester = attrs.get(
+            "semester",
+            getattr(self.instance, "semester", None),
+        )
+        regulation = attrs.get(
+            "regulation",
+            getattr(self.instance, "regulation", None),
+        )
 
-        if semester and regulation:
-            if semester.program_id != regulation.program_id:
-                raise serializers.ValidationError({
-                    "regulation": (
-                        "The selected regulation does not belong "
-                        "to the selected semester's program."
-                    )
-                })
-
+        if semester and regulation and semester.program_id != regulation.program_id:
+            raise serializers.ValidationError({
+                "regulation": (
+                    "The selected regulation does not belong "
+                    "to the selected semester's program."
+                )
+            })
         return attrs
