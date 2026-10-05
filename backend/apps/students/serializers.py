@@ -420,6 +420,12 @@ class StudentSerializer(serializers.ModelSerializer):
             )
 
         if enrollment_semester:
+            if not enrollment_semester.is_active:
+                raise serializers.ValidationError({"enrollment_semester":"Student enrollment must use an active semester."})
+
+            if not enrollment_semester.academic_year:
+                raise serializers.ValidationError({"enrollment_semester":"Selected semester has no academic year."})
+
             program = attrs.get("program")
 
             if (
@@ -677,6 +683,16 @@ class EnrollmentSerializer(serializers.ModelSerializer):
                         "Academic year is required."
                     )
                 }
+            )
+
+        if not student.program.is_active:
+            raise serializers.ValidationError(
+                {"student": "Only students in an active program can be enrolled."}
+            )
+
+        if not semester.is_active:
+            raise serializers.ValidationError(
+                {"semester": "Only active semesters can be used for student enrollment."}
             )
 
         if semester.program_id != student.program_id:
