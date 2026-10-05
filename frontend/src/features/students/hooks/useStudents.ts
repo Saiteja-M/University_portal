@@ -302,7 +302,7 @@ export function useUpdateGuardian(
 export function useMyStudentCourses() {
   return useQuery({
     queryKey: [...studentQueryKeys.me(), 'courses'],
-    queryFn: studentsApi.courses,
+    queryFn: studentsApi.myCourses,
   })
 }
 
