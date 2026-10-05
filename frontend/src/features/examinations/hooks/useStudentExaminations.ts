@@ -1,13 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
-import { studentExaminationsApi } from '../api/examinationsApi'
+import { useMyExaminations as useExaminations } from './useExaminations'
 
 export const studentExaminationKeys = {
-  all: ['student-examinations'] as const,
+  all: ['examinations', 'my-examinations'] as const,
 }
 
 export function useMyExaminations() {
-  return useQuery({
-    queryKey: studentExaminationKeys.all,
-    queryFn: studentExaminationsApi.list,
-  })
+  return useExaminations()
 }
