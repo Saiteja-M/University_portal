@@ -24,7 +24,7 @@ const adminItems: NavItem[] = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: '⌂' },
   { label: 'Academics', path: '/academics', icon: '▣' },
   { label: 'Courses', path: '/academics/courses', icon: '▤' },
-  { label: 'Timetable', path: '/student/timetable', icon: '▦' },
+  { label: 'Timetable', path: '/academics/timetable', icon: '▦' },
   { label: 'Assignments', path: '/academics/assignments', icon: '✓' },
   { label: 'Students', path: '/students', icon: '♙' },
   { label: 'Faculty', path: '/faculty', icon: '◉' },
@@ -57,7 +57,6 @@ export function Sidebar() {
 
   const roles = user?.roles ?? []
 
-  // Use explicit role checks instead of assuming every non-faculty user is admin.
   const isAdmin = roles.includes('ADMIN')
   const isHod = roles.includes('HOD')
   const isFaculty = roles.includes('FACULTY')
@@ -75,39 +74,25 @@ export function Sidebar() {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-slate-200 bg-slate-950 text-white lg:flex">
-      {/* Brand */}
       <div className="border-b border-white/10 px-6 py-6">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-lg font-bold shadow-lg">
             U
           </div>
-
           <div>
-            <h1 className="text-base font-bold tracking-wide">
-              University Portal
-            </h1>
-
-            <p className="text-xs text-slate-400">
-              Academic Management System
-            </p>
+            <h1 className="text-base font-bold tracking-wide">University Portal</h1>
+            <p className="text-xs text-slate-400">Academic Management System</p>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav
-        aria-label="Main navigation"
-        className="flex-1 overflow-y-auto px-4 py-6"
-      >
+      <nav aria-label="Main navigation" className="flex-1 overflow-y-auto px-4 py-6">
         <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
           Main Menu
         </p>
-
         <div className="space-y-1">
           {isLoading ? (
-            <p className="px-4 py-3 text-sm text-slate-400">
-              Loading menu...
-            </p>
+            <p className="px-4 py-3 text-sm text-slate-400">Loading menu...</p>
           ) : items.length > 0 ? (
             items.map((item) => (
               <NavLink
@@ -123,33 +108,22 @@ export function Sidebar() {
                   ].join(' ')
                 }
               >
-                <span
-                  aria-hidden="true"
-                  className="flex h-6 w-6 items-center justify-center text-base"
-                >
+                <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center text-base">
                   {item.icon}
                 </span>
-
                 <span>{item.label}</span>
               </NavLink>
             ))
           ) : (
-            <p className="px-4 py-3 text-sm text-slate-400">
-              No menu available for this account.
-            </p>
+            <p className="px-4 py-3 text-sm text-slate-400">No menu available for this account.</p>
           )}
         </div>
       </nav>
 
-      {/* User information */}
       <div className="border-t border-white/10 p-4">
         <div className="rounded-xl bg-white/5 p-4">
           <p className="text-xs text-slate-400">Signed in as</p>
-
-          <p className="mt-1 truncate text-sm font-semibold">
-            {user?.username ?? 'User'}
-          </p>
-
+          <p className="mt-1 truncate text-sm font-semibold">{user?.username ?? 'User'}</p>
           <p className="mt-1 text-xs text-slate-500">
             {roles.length > 0 ? roles.join(', ') : 'Role unavailable'}
           </p>
