@@ -78,7 +78,8 @@ import StudentCoursessPage from '../../features/students/StudentCoursessPage'
 import StudentResultsPage from '../../features/students/StudentResultsPage'
 import StudentAttendancePage from '../../features/attendance/pages/FacultyAttendancePage'
 import { ExaminationResultsAdminPage } from '../../features/examinations/pages/ExaminationResultsAdminPage'
-import { ExaminationsAdminPage } from '../../features/examinations/pages/ExaminationsAdminPage'// =========================================================
+import { ExaminationsAdminPage } from '../../features/examinations/pages/ExaminationsAdminPage'
+import StudentExaminationsPage from '../../features/examinations/pages/StudentExaminationsPage'// =========================================================
 // APPLICATION LAYOUT
 // =========================================================
 
@@ -674,10 +675,23 @@ export const router = createBrowserRouter([
 },
 
 {
+  path: 'student/examinations',
+  element: (
+    <StudentRoute>
+      <AppShell>
+        <StudentExaminationsPage />
+      </AppShell>
+    </StudentRoute>
+  ),
+},
+
+{
   path: 'student/results',
   element: (
     <StudentRoute>
-      <StudentResultsPage />
+      <AppShell>
+        <StudentResultsPage />
+      </AppShell>
     </StudentRoute>
   ),
 },
