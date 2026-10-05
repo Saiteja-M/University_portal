@@ -1,3 +1,8 @@
+const EMPTY_OFFERINGS: never[] = []
+const EMPTY_COURSES: never[] = []
+const EMPTY_ACADEMIC_YEARS: never[] = []
+const EMPTY_SEMESTERS: never[] = []
+
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -61,10 +66,10 @@ export default function CourseOfferingsPage() {
   const createOffering = useCreateCourseOffering()
   const deleteOffering = useDeleteCourseOffering()
 
-  const offerings = offeringsQuery.data?.results ?? []
-  const courses = coursesQuery.data?.results ?? []
-  const years = yearsQuery.data?.results ?? []
-  const semesters = semestersQuery.data?.results ?? []
+  const offerings = offeringsQuery.data?.results ?? EMPTY_OFFERINGS
+  const courses = coursesQuery.data?.results ?? EMPTY_COURSES
+  const years = yearsQuery.data?.results ?? EMPTY_ACADEMIC_YEARS
+  const semesters = semestersQuery.data?.results ?? EMPTY_SEMESTERS
 
   const selectedCourse = courses.find(
     (course) => course.id === Number(form.course),
