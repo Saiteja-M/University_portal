@@ -5,8 +5,6 @@ import type {
   EnrollmentCreateData,
   EnrollmentUpdateData,
   CourseOfferingEnrollment,
-  CourseOfferingEnrollmentCreateData,
-  CourseOfferingEnrollmentUpdateData,
   Guardian,
   GuardianCreateData,
   GuardianUpdateData,
