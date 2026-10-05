@@ -4,6 +4,9 @@ import type {
   Enrollment,
   EnrollmentCreateData,
   EnrollmentUpdateData,
+  CourseOfferingEnrollment,
+  CourseOfferingEnrollmentCreateData,
+  CourseOfferingEnrollmentUpdateData,
   Guardian,
   GuardianCreateData,
   GuardianUpdateData,
@@ -544,6 +547,32 @@ export const studentsApi = {
         )
 
       return response.data
+    },
+  },
+
+  // ==========================================================================
+  // COURSE OFFERING ENROLLMENTS
+  // ===========================================================================
+
+  courseOfferingEnrollments: {
+    list: async (params?: Record<string, string | number | boolean>): Promise<PaginatedResponse<CourseOfferingEnrollment>> => {
+      const response = await apiClient.get<PaginatedResponse<CourseOfferingEnrollment>>('/students/course-offering-enrollments/', { params })
+      return response.data
+    },
+    get: async (id: number): Promise<CourseOfferingEnrollment> => {
+      const response = await apiClient.get<CourseOfferingEnrollment>(`/students/course-offering-enrollments/${id}/`)
+      return response.data
+    },
+    create: async (data: CourseOfferingEnrollmentCreateData): Promise<CourseOfferingEnrollment> => {
+      const response = await apiClient.post<CourseOfferingEnrollment>('/students/course-offering-enrollments/', data)
+      return response.data
+    },
+    update: async (id: number, data: CourseOfferingEnrollmentUpdateData): Promise<CourseOfferingEnrollment> => {
+      const response = await apiClient.patch<CourseOfferingEnrollment>(`/students/course-offering-enrollments/${id}/`, data)
+      return response.data
+    },
+    delete: async (id: number): Promise<void> => {
+      await apiClient.delete(`/students/course-offering-enrollments/${id}/`)
     },
   },
 }
