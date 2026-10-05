@@ -313,7 +313,7 @@ const experiences = {
 
 const courseAssignments = {
   list: async (
-    params?: { faculty?: number },
+    params?: { faculty?: number; offering?: number },
   ): Promise<
     PaginatedResponse<FacultyCourseAssignment>
   > => {
