@@ -449,7 +449,7 @@ class StudentViewSet(
                 "semester": enrollment.semester_id,
                 "semester_number": enrollment.semester.number,
                 "semester_type": enrollment.semester.semester_type,
-                "course_count": courses.count(),
+                "course_count": len(courses),
                 "total_credits": total_credits,
                 "results": serializer.data,
             }
@@ -607,10 +607,7 @@ class StudentViewSet(
         serializer.instance = student
     
 
-class StudentProfileViewSet(
-    StudentsViewSetMixin,
-    viewsets.ModelViewSet,
-):
+class StudentProfileViewSet(viewsets.ModelViewSet):
     queryset = (
         StudentProfile.objects
         .select_related(
@@ -650,6 +647,20 @@ class StudentProfileViewSet(
         "blood_group",
     ]
 
+    def get_permissions(self):
+        if self.action in {"retrieve", "update", "partial_update"} and getattr(self.request.user, "student", None):
+            return [IsAuthenticatedStudent()]
+        if self.request.method in SAFE_METHODS:
+            return [IsStudentViewer()]
+        return [IsStudentManager()]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if getattr(user, "student", None) and not user.is_superuser and not user.groups.filter(name__in={"ADMIN", "HOD", "FACULTY"}).exists():
+            return queryset.filter(student=user.student)
+        return queryset
+
     def perform_create(self, serializer):
         profile = create_student_profile(
             **serializer.validated_data,
@@ -658,6 +669,9 @@ class StudentProfileViewSet(
         serializer.instance = profile
 
     def perform_update(self, serializer):
+        if getattr(self.request.user, "student", None) and serializer.instance.student_id != self.request.user.student.id:
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("You can update only your own student profile.")
         profile = update_student_profile(
             serializer.instance,
             **serializer.validated_data,
