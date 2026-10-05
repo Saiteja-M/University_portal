@@ -320,8 +320,8 @@ export default function CourseOfferingsPage() {
                   onChange={(event) =>
                     updateForm('course', event.target.value)
                   }
-                  className={fieldClassName}
-                  disabled={coursesQuery.isLoading}
+                  className={fieldClassName + ' cursor-pointer'}
+                  
                 >
                   <option value="">
                     {coursesQuery.isLoading
@@ -345,7 +345,7 @@ export default function CourseOfferingsPage() {
                     updateForm('academic_year', event.target.value)
                   }
                   className={fieldClassName}
-                  disabled={!selectedCourse || yearsQuery.isLoading}
+                  
                 >
                   <option value="">
                     {!selectedCourse
@@ -372,11 +372,7 @@ export default function CourseOfferingsPage() {
                     updateForm('semester', event.target.value)
                   }
                   className={fieldClassName}
-                  disabled={
-                    !selectedCourse ||
-                    !form.academic_year ||
-                    semestersQuery.isLoading
-                  }
+                  
                 >
                   <option value="">
                     {!selectedCourse
