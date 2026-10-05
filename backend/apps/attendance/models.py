@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.academics.models import AcademicYear, Course, Semester, CourseOffering
-from apps.faculty.models import Faculty
+from apps.faculty.models import Faculty, FacultyCourseAssignment
 from apps.students.models import Student, CourseOfferingEnrollment
 
 
@@ -169,20 +169,24 @@ class AttendanceSession(models.Model):
             and self.course_id
             and self.academic_year_id
             and self.semester_id
+            and not self.offering_id
         ):
-            assignment_exists = (
-                self.faculty.course_assignments.filter(
-                    course_id=self.course_id,
-                    academic_year_id=self.academic_year_id,
-                    semester_id=self.semester_id,
-                ).exists()
-            )
+            assignment_exists = FacultyCourseAssignment.objects.filter(
+                faculty_id=self.faculty_id,
+                offering__course_id=self.course_id,
+                offering__academic_year_id=self.academic_year_id,
+                offering__semester_id=self.semester_id,
+                offering__is_active=True,
+                is_active=True,
+            ).exclude(
+                offering__status__in={"CLOSED", "CANCELLED"},
+            ).exists()
 
             if not assignment_exists:
                 errors["faculty"] = (
                     "The faculty member is not assigned "
-                    "to this course for the selected "
-                    "academic year and semester."
+                    "to an active offering for the selected "
+                    "course, academic year and semester."
                 )
 
         if errors:
