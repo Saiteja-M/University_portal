@@ -1,3 +1,5 @@
+const EMPTY_EXAMS: never[] = []
+
 import { useMemo, useState } from 'react'
 
 import {
@@ -81,7 +83,7 @@ export function ExaminationsAdminPage() {
   const publishExam = usePublishExam()
   const unpublishExam = useUnpublishExam()
 
-  const exams = examsQuery.data?.results ?? []
+  const exams = examsQuery.data?.results ?? EMPTY_EXAMS
   const semesters = semestersQuery.data?.results ?? []
 
   const filteredExams = useMemo(() => {
