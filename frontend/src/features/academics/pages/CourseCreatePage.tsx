@@ -86,7 +86,7 @@ export default function CourseCreatePage() {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     resetField,
     formState: { errors },
