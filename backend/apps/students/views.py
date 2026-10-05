@@ -2,9 +2,6 @@ from django.db import transaction
 from django.db.models import Prefetch
 from django.http import FileResponse
 from django.utils import timezone
-from apps.academics.models import Course
-
-
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
