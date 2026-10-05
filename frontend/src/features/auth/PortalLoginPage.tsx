@@ -40,7 +40,7 @@ const PORTAL_CONFIG = {
       'Faculty and teaching portal',
     button: 'Sign in as Faculty',
     dashboard: '/faculty/dashboard',
-    allowedRoles: ['FACULTY', 'HOD'],
+    allowedRoles: ['FACULTY'],
   },
 
   STUDENT: {
@@ -242,7 +242,8 @@ export function PortalLoginPage({
        */
       const isAdmin =
         portal === 'ADMIN' &&
-        user.is_superuser
+        (user.is_superuser ||
+          user.roles.includes('ADMIN'))
 
       const hasRequiredRole =
         user.roles.some((role) =>
