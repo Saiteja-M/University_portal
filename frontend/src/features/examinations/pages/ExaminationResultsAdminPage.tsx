@@ -9,8 +9,6 @@ import {
 import { useStudents } from '../../students/hooks/useStudents'
 import { useCourseOfferings } from '../../academics/hooks/useAcademics'
 import type { Student } from '../../students/types/students'
-import type { CourseOffering } from '../../academics/types/academics'
-import type { Exam } from '../types/adminExaminations'
 import type { ResultStatus } from '../types/examinations'
 
 type ResultForm = {
