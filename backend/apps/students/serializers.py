@@ -4,7 +4,7 @@ from apps.academics.models import Course
 
 from apps.academics.models import AcademicYear, Semester
 
-from .models import Enrollment, Guardian, Student, StudentProfile
+from .models import CourseOfferingEnrollment, Enrollment, Guardian, Student, StudentProfile
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -825,7 +825,7 @@ class CourseOfferingEnrollmentSerializer(serializers.ModelSerializer):
     section = serializers.CharField(source="offering.section", read_only=True)
 
     class Meta:
-        model = __import__("apps.students.models", fromlist=["CourseOfferingEnrollment"]).CourseOfferingEnrollment
+        model = CourseOfferingEnrollment
         fields = [
             "id", "student_enrollment", "student_id", "student_name", "offering",
             "course_code", "course_name", "academic_year_name", "semester_number",
@@ -842,7 +842,6 @@ class CourseOfferingEnrollmentSerializer(serializers.ModelSerializer):
         return user.get_full_name().strip() if user else obj.student_enrollment.student.student_id
 
     def validate(self, attrs):
-        from .models import CourseOfferingEnrollment
         enrollment = attrs.get("student_enrollment", getattr(self.instance, "student_enrollment", None))
         offering = attrs.get("offering", getattr(self.instance, "offering", None))
         if not enrollment or not offering:
