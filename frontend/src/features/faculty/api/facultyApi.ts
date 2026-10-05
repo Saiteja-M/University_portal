@@ -55,7 +55,7 @@ export interface FacultyListParams {
 const faculty = {
   list: async (
     params?: FacultyListParams,
-  ): Promise<PaginatedResponse<FacultyProfile>> => {
+  ): Promise<PaginatedResponse<Faculty>> => {
     const response = await apiClient.get<
       PaginatedResponse<Faculty>
     >(
@@ -121,7 +121,7 @@ const profiles = {
   ): Promise<PaginatedResponse<FacultyProfile>> => {
     const response =
       await apiClient.get<
-        PaginatedResponse<Faculty>
+        PaginatedResponse<FacultyProfile>
       >(
         "/faculty/profiles/",
         { params },
@@ -132,7 +132,7 @@ const profiles = {
 
   get: async (
     id: number,
-  ): Promise<Faculty> => {
+  ): Promise<FacultyProfile> => {
     const response =
       await apiClient.get<FacultyProfile>(
         `/faculty/profiles/${id}/`,
