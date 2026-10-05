@@ -18,6 +18,8 @@ import type {
   StudentProfileCreateData,
   StudentProfileUpdateData,
   StudentUpdateData,
+  CourseOfferingEnrollmentCreateData,
+  CourseOfferingEnrollmentUpdateData,
 } from '../types/students'
 
 /* ============================================================================
@@ -25,6 +27,8 @@ import type {
    ========================================================================== */
 
 export type {
+  CourseOfferingEnrollmentCreateData,
+  CourseOfferingEnrollmentUpdateData,
   EnrollmentCreateData,
   EnrollmentUpdateData,
   GuardianCreateData,
@@ -461,7 +465,7 @@ export const studentsApi = {
   // ===========================================================================
 
   courseOfferingEnrollments: {
-    list: async (params?: Record<string, string | number | boolean>): Promise<PaginatedResponse<CourseOfferingEnrollment>> => {
+    list: async (params?: Record<string, string | number | boolean | undefined>): Promise<PaginatedResponse<CourseOfferingEnrollment>> => {
       const response = await apiClient.get<PaginatedResponse<CourseOfferingEnrollment>>('/students/course-offering-enrollments/', { params })
       return response.data
     },
