@@ -2,18 +2,21 @@ import { apiClient } from "../../../lib/axios";
 
 import type {
   Faculty,
-  FacultyCreateData,
-  FacultyUpdateData,
   FacultyProfile,
-  FacultyProfileCreateData,
-  FacultyProfileUpdateData,
   FacultyQualification,
   FacultyExperience,
   FacultyCourseAssignment,
+} from "../types/faculty";
+
+export type {
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
   FacultyCourseAssignmentCreateData,
   FacultyCourseAssignmentUpdateData,
 } from "../types/faculty";
-/* =========================================================
+=========================================================
    Generic API Types
 ========================================================= */
 
@@ -27,15 +30,6 @@ export interface PaginatedResponse<T> {
 /* =========================================================
    Faculty List Parameters
 ========================================================= */
-
-export type {
-  FacultyCreateData,
-  FacultyUpdateData,
-  FacultyProfileCreateData,
-  FacultyProfileUpdateData,
-  FacultyCourseAssignmentCreateData,
-  FacultyCourseAssignmentUpdateData,
-} from "../types/faculty";
 
 export interface FacultyListParams {
   search?: string;
