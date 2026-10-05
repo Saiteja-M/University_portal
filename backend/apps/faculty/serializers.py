@@ -332,13 +332,38 @@ class FacultySerializer(serializers.ModelSerializer):
 class FacultyCourseAssignmentSerializer(serializers.ModelSerializer):
     faculty_name = serializers.SerializerMethodField()
 
-    course_name = serializers.CharField(
-        source="course.name",
+    faculty_employee_id = serializers.CharField(
+        source="faculty.employee_id",
         read_only=True,
     )
 
     course_code = serializers.CharField(
-        source="course.code",
+        source="offering.course.code",
+        read_only=True,
+    )
+
+    course_name = serializers.CharField(
+        source="offering.course.name",
+        read_only=True,
+    )
+
+    academic_year_name = serializers.CharField(
+        source="offering.academic_year.name",
+        read_only=True,
+    )
+
+    semester_number = serializers.IntegerField(
+        source="offering.semester.number",
+        read_only=True,
+    )
+
+    program_name = serializers.CharField(
+        source="offering.semester.program.name",
+        read_only=True,
+    )
+
+    section = serializers.CharField(
+        source="offering.section",
         read_only=True,
     )
 
@@ -349,11 +374,13 @@ class FacultyCourseAssignmentSerializer(serializers.ModelSerializer):
             "id",
             "faculty",
             "faculty_name",
-            "course",
+            "faculty_employee_id",
+            "offering",
             "course_code",
             "course_name",
-            "academic_year",
-            "semester",
+            "academic_year_name",
+            "semester_number",
+            "program_name",
             "section",
             "assigned_date",
             "is_active",
@@ -364,43 +391,38 @@ class FacultyCourseAssignmentSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "faculty_name",
+            "faculty_employee_id",
             "course_code",
             "course_name",
+            "academic_year_name",
+            "semester_number",
+            "program_name",
+            "section",
             "created_at",
             "updated_at",
         ]
 
-    def get_faculty_name(self, obj):
-        try:
-            profile = obj.faculty.profile
-
-            return (
-                f"{profile.first_name or ''} "
-                f"{profile.last_name or ''}"
-            ).strip()
-
-        except FacultyProfile.DoesNotExist:
-            return obj.faculty.faculty_id
-
     def validate(self, attrs):
-        course = attrs.get("course")
-        semester = attrs.get("semester")
-        academic_year = attrs.get("academic_year")
+        faculty = attrs.get("faculty")
+        offering = attrs.get("offering")
 
-        if course and semester:
-            if course.semester_id != semester.id:
-                raise serializers.ValidationError(
-                    {
-                        "semester": (
-                            "The selected semester must match "
-                            "the course semester."
-                        )
-                    }
-                )
+        if faculty and faculty.status != Faculty.Status.ACTIVE:
+            raise serializers.ValidationError(
+                {"faculty": "Only active faculty can be assigned to a course offering."}
+            )
 
-        if course and academic_year:
-            if course.semester.academic_year_id != academic_year.id:
-                raise serializers.ValidationError(
+        if offering and not offering.is_active:
+            raise serializers.ValidationError(
+                {"offering": "The selected course offering is inactive."}
+            )
+
+        if offering and offering.status in {"CLOSED", "CANCELLED"}:
+            raise serializers.ValidationError(
+                {"offering": "A closed or cancelled course offering cannot receive a faculty assignment."}
+            )
+
+        return attrs
+ers.ValidationError(
                     {
                         "academic_year": (
                             "The selected academic year must match "
