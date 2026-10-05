@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import models
 
 from apps.academics.models import Program, Semester
@@ -298,40 +298,40 @@ class CourseOfferingEnrollment(TimeStampedModel):
             offering = self.offering
 
             if enrollment.status != Enrollment.Status.ACTIVE:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "student_enrollment": "Only an active semester enrollment can receive a course offering."
                 })
 
             if enrollment.student.status != Student.Status.ACTIVE:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "student_enrollment": "Only active students can be enrolled in a course offering."
                 })
 
             if not offering.is_active:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Course offering must be active."
                 })
 
             if offering.status in {"CLOSED", "CANCELLED"}:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Students cannot be enrolled in a closed or cancelled course offering."
                 })
 
             if offering.status not in {"PLANNED", "OPEN"}:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Students can only be enrolled in planned or open course offerings."
                 })
 
             if enrollment.academic_year_id != offering.academic_year_id:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Course offering academic year must match the student's enrollment."
                 })
             if enrollment.semester_id != offering.semester_id:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Course offering semester must match the student's enrollment."
                 })
             if enrollment.student.program_id != offering.semester.program_id:
-                raise ValidationError({
+                raise DjangoValidationError({
                     "offering": "Course offering must belong to the student's program."
                 })
 
@@ -346,7 +346,7 @@ class CourseOfferingEnrollment(TimeStampedModel):
                     .count()
                 )
                 if enrolled_count >= offering.capacity:
-                    raise ValidationError({
+                    raise DjangoValidationError({
                         "offering": "Course offering capacity has been reached."
                     })
 
