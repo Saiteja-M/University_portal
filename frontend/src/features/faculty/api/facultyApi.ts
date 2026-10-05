@@ -6,6 +6,12 @@ import type {
   FacultyQualification,
   FacultyExperience,
   FacultyCourseAssignment,
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
+  FacultyCourseAssignmentCreateData,
+  FacultyCourseAssignmentUpdateData,
 } from "../types/faculty";
 
 export type {
