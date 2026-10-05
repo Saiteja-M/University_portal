@@ -181,7 +181,7 @@ export default function FacultyDashboardPage() {
           item.course_name,
           item.course_code,
           item.section,
-          item.semester_number_number,
+          item.semester_number,
         ]
           .map((value) => String(value ?? ''))
           .join(' ')
