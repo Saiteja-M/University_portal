@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 from apps.accounts.models import UserProfile
 from .models import Faculty, FacultyProfile, FacultyQualification, FacultyExperience, FacultyCourseAssignment
@@ -54,8 +55,20 @@ class FacultySerializer(serializers.ModelSerializer):
         if username and User.objects.filter(username=username).exists():
             raise serializers.ValidationError({"create_username":"A user with this username already exists."})
         employee_id = attrs.get("employee_id")
-        if employee_id and Faculty.objects.filter(employee_id=employee_id).exists():
-            raise serializers.ValidationError({"employee_id":"A faculty member with this employee ID already exists."})
+        if employee_id:
+            existing = Faculty.objects.filter(employee_id=employee_id)
+            if self.instance:
+                existing = existing.exclude(pk=self.instance.pk)
+            if existing.exists():
+                raise serializers.ValidationError({"employee_id":"A faculty member with this employee ID already exists."})
+
+        department = attrs.get("department", getattr(self.instance, "department", None))
+        if department and not department.is_active:
+            raise serializers.ValidationError({"department":"Faculty must belong to an active department."})
+
+        joining_date = attrs.get("joining_date", getattr(self.instance, "joining_date", None))
+        if joining_date and joining_date > timezone.localdate():
+            raise serializers.ValidationError({"joining_date":"Joining date cannot be in the future."})
         return attrs
     def create(self, validated_data):
         username = validated_data.pop("create_username", None)
