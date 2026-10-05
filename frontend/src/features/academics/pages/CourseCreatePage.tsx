@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import {
@@ -108,8 +108,8 @@ export default function CourseCreatePage() {
     },
   })
 
-  const selectedProgram = watch('program')
-  const selectedAcademicYear = watch('academic_year')
+  const selectedProgram = useWatch({ control, name: 'program' })
+  const selectedAcademicYear = useWatch({ control, name: 'academic_year' })
 
   const programsQuery = usePrograms({ is_active: true })
   const academicYearsQuery = useAcademicYears()
