@@ -296,6 +296,16 @@ class CourseOfferingEnrollment(TimeStampedModel):
         if self.student_enrollment_id and self.offering_id:
             enrollment = self.student_enrollment
             offering = self.offering
+
+            if not offering.is_active:
+                raise ValidationError({
+                    "offering": "Course offering must be active."
+                })
+
+            if offering.status in {"CLOSED", "CANCELLED"}:
+                raise ValidationError({
+                    "offering": "Students cannot be enrolled in a closed or cancelled course offering."
+                })
             if enrollment.academic_year_id != offering.academic_year_id:
                 raise ValidationError({
                     "offering": "Course offering academic year must match the student's enrollment."
