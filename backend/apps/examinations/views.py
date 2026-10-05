@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.students.models import CourseOfferingEnrollment
+from apps.faculty.models import FacultyCourseAssignment
 
 from .models import Exam, StudentResult
 from .permissions import IsAuthenticatedStudent, IsExaminationManager, IsFacultyExamViewer
@@ -219,10 +220,12 @@ class FacultyExamViewSet(viewsets.ReadOnlyModelViewSet):
         faculty = getattr(user, "faculty", None)
         if faculty is None:
             return queryset.none()
-        return queryset.filter(
-            student_results__course_offering__faculty_assignments__faculty=faculty,
-            student_results__course_offering__faculty_assignments__is_active=True,
-        ).distinct()
+        assigned_semesters = FacultyCourseAssignment.objects.filter(
+            faculty=faculty,
+            is_active=True,
+            offering__is_active=True,
+        ).values("offering__semester_id")
+        return queryset.filter(semester_id__in=Subquery(assigned_semesters)).distinct()
 
 
 class FacultyResultViewSet(viewsets.ReadOnlyModelViewSet):
