@@ -327,7 +327,6 @@ class CourseOfferingEnrollment(TimeStampedModel):
                     "offering": "Course offering academic year must match the student's enrollment."
                 })
             if enrollment.semester_id != offering.semester_id:
-                from django.core.exceptions import ValidationError
                 raise ValidationError({
                     "offering": "Course offering semester must match the student's enrollment."
                 })
