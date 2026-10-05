@@ -20,27 +20,24 @@ export default function FacultyAttendancePage() {
 
   const createSession = useMutation({
     mutationFn: async () => {
-      const course = courses.data?.results.find(c => c.offering === selectedOffering)
-      if (!course) throw new Error('Select a course offering first.')
-      return attendanceApi.sessions.create({
-        faculty: course.faculty,
-        offering: course.offering,
-        course: course.course_id,
-        academic_year: undefined as never,
-        semester: undefined as never,
-        session_date: date,
-        period,
-        topic,
-      })
+      if (!selectedOffering) throw new Error('Select a course offering first.')
+      return attendanceApi.sessions.create({ offering: selectedOffering, session_date: date, period, topic })
     },
-    onSuccess: (session) => { setSelectedSession(session.id); setSelectedOffering(session.offering); qc.invalidateQueries({ queryKey: ['faculty-attendance-sessions'] }) },
+    onSuccess: (session) => {
+      setSelectedSession(session.id)
+      setSelectedOffering(session.offering)
+      qc.invalidateQueries({ queryKey: ['faculty-attendance-sessions'] })
+    },
   })
 
   const mark = useMutation({
     mutationFn: () => attendanceApi.sessions.mark(selectedSession as number, {
       attendance: Object.entries(status).map(([student_id, value]) => ({ student_id: Number(student_id), status: value })),
     }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['faculty-attendance-sessions'] }); qc.invalidateQueries({ queryKey: ['faculty-attendance-students'] }) },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['faculty-attendance-sessions'] })
+      qc.invalidateQueries({ queryKey: ['faculty-attendance-students'] })
+    },
   })
 
   const selected = useMemo(() => sessions.data?.results.find(s => s.id === selectedSession) ?? null, [sessions.data, selectedSession])
@@ -51,7 +48,7 @@ export default function FacultyAttendancePage() {
       <section className="space-y-4 rounded-2xl border bg-white p-5 shadow-sm"><h2 className="font-semibold text-slate-900">New attendance session</h2>
         <select value={selectedOffering ?? ''} onChange={e=>setSelectedOffering(Number(e.target.value)||null)} className="w-full rounded-xl border px-3 py-2 text-sm"><option value="">Select course offering</option>{(courses.data?.results ?? []).map(c=><option key={c.offering} value={c.offering}>{c.course_code} · {c.section}</option>)}</select>
         <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="w-full rounded-xl border px-3 py-2 text-sm" />
-        <input type="number" min={1} value={period} onChange={e=>setPeriod(Number(e.target.value))} className="w-full rounded-xl border px-3 py-2 text-sm" placeholder="Period" />
+        <input type="number" min={1} value={period} onChange={e=>setPeriod(Number(e.target.value))} className="w-full rounded-xl border px-3 py-2 text-sm" />
         <input value={topic} onChange={e=>setTopic(e.target.value)} className="w-full rounded-xl border px-3 py-2 text-sm" placeholder="Topic" />
         <button disabled={!selectedOffering || createSession.isPending} onClick={()=>createSession.mutate()} className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{createSession.isPending ? 'Creating...' : 'Create Session'}</button>
         {createSession.isError && <p className="text-xs text-red-600">Unable to create session. Check the selected offering and date.</p>}
