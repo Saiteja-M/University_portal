@@ -6,6 +6,7 @@ import {
   usePrograms,
   useRegulations,
   useSemesters,
+  useCourseOfferings,
 } from '../hooks'
 
 function StatCard({
@@ -61,6 +62,7 @@ export default function AcademicsDashboardPage() {
   const academicYearsQuery = useAcademicYears()
   const semestersQuery = useSemesters()
   const coursesQuery = useCourses()
+  const offeringsQuery = useCourseOfferings()
 
   const departments = departmentsQuery.data?.results ?? []
   const programs = programsQuery.data?.results ?? []
@@ -68,6 +70,7 @@ export default function AcademicsDashboardPage() {
   const academicYears = academicYearsQuery.data?.results ?? []
   const semesters = semestersQuery.data?.results ?? []
   const courses = coursesQuery.data?.results ?? []
+  const offerings = offeringsQuery.data?.results ?? []
 
   const activeDepartments = departments.filter(
     (item) => item.is_active,
@@ -93,13 +96,18 @@ export default function AcademicsDashboardPage() {
     (item) => item.is_active,
   ).length
 
+  const openOfferings = offerings.filter(
+    (item) => item.status === 'OPEN' && item.is_active,
+  ).length
+
   const isLoading =
     departmentsQuery.isLoading ||
     programsQuery.isLoading ||
     regulationsQuery.isLoading ||
     academicYearsQuery.isLoading ||
     semestersQuery.isLoading ||
-    coursesQuery.isLoading
+    coursesQuery.isLoading ||
+    offeringsQuery.isLoading
 
   const hasError =
     departmentsQuery.isError ||
@@ -107,7 +115,8 @@ export default function AcademicsDashboardPage() {
     regulationsQuery.isError ||
     academicYearsQuery.isError ||
     semestersQuery.isError ||
-    coursesQuery.isError
+    coursesQuery.isError ||
+    offeringsQuery.isError
 
   const managementItems = [
     {
@@ -139,6 +148,11 @@ export default function AcademicsDashboardPage() {
       title: 'Courses',
       description: 'Manage curriculum courses',
       path: '/academics/courses',
+    },
+    {
+      title: 'Course Offerings',
+      description: 'Manage semester and section offerings',
+      path: '/academics/course-offerings',
     },
   ]
 
@@ -237,6 +251,13 @@ export default function AcademicsDashboardPage() {
               value={courses.length}
               active={activeCourses}
               description="Curriculum courses"
+            />
+
+            <StatCard
+              title="Course Offerings"
+              value={offerings.length}
+              active={openOfferings}
+              description="Semester and section delivery"
             />
           </div>
         </section>
