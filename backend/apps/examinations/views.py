@@ -1,7 +1,10 @@
+from django.db.models import Subquery
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.students.models import CourseOfferingEnrollment
 
 from .models import Exam, StudentResult
 from .permissions import IsAuthenticatedStudent, IsExaminationManager, IsFacultyExamViewer
@@ -89,6 +92,30 @@ class AdminStudentResultViewSet(viewsets.ModelViewSet):
                 status=400,
             )
         return super().destroy(request, *args, **kwargs)
+
+
+class MyStudentExamViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ExamSerializer
+    permission_classes = [IsAuthenticatedStudent]
+    filterset_fields = ["exam_type", "semester"]
+    search_fields = ["name"]
+    ordering_fields = ["start_date", "end_date", "name"]
+    ordering = ["start_date", "name"]
+
+    def get_queryset(self):
+        student = self.request.user.student
+        enrolled_semesters = CourseOfferingEnrollment.objects.filter(
+            student_enrollment__student=student,
+            student_enrollment__status="ACTIVE",
+            status=CourseOfferingEnrollment.Status.ENROLLED,
+        ).values("offering__semester_id")
+        return Exam.objects.select_related(
+            "semester", "semester__academic_year", "semester__program"
+        ).filter(
+            semester_id__in=Subquery(enrolled_semesters),
+            is_published=True,
+            is_active=True,
+        ).distinct()
 
 
 class MyResultsView(APIView):
