@@ -110,17 +110,25 @@ class RegulationSerializer(serializers.ModelSerializer):
         return value.strip()
 
     def validate(self, attrs):
-        start_year = attrs.get("start_year")
-        end_year = attrs.get("end_year")
+        start_year = attrs.get(
+            "start_year",
+            getattr(self.instance, "start_year", None),
+        )
+        end_year = attrs.get(
+            "end_year",
+            getattr(self.instance, "end_year", None),
+        )
 
         if (
             end_year is not None
             and start_year is not None
             and end_year < start_year
         ):
-            raise serializers.ValidationError(
-                "End year must be greater than or equal to start year."
-            )
+            raise serializers.ValidationError({
+                "end_year": (
+                    "End year must be greater than or equal to start year."
+                )
+            })
 
         return attrs
 class AcademicYearSerializer(serializers.ModelSerializer):
@@ -142,10 +150,32 @@ class AcademicYearSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        if attrs["start_date"] >= attrs["end_date"]:
-            raise serializers.ValidationError(
-                "Start date must be before end date."
-            )
+        start_date = attrs.get(
+            "start_date",
+            getattr(self.instance, "start_date", None),
+        )
+        end_date = attrs.get(
+            "end_date",
+            getattr(self.instance, "end_date", None),
+        )
+
+        if start_date is not None and end_date is not None:
+            if start_date >= end_date:
+                raise serializers.ValidationError({
+                    "end_date": "End date must be after start date."
+                })
+
+        if attrs.get("is_current") is True:
+            queryset = AcademicYear.objects.filter(is_current=True)
+            if self.instance is not None:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise serializers.ValidationError({
+                    "is_current": (
+                        "Another academic year is already marked current."
+                    )
+                })
+
         return attrs
 
 
