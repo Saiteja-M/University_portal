@@ -1,3 +1,8 @@
+const EMPTY_COURSES: never[] = []
+const EMPTY_SEMESTERS: never[] = []
+const EMPTY_REGULATIONS: never[] = []
+const EMPTY_PROGRAMS: never[] = []
+
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -55,10 +60,10 @@ export default function CoursesPage() {
   const updateCourse = useUpdateCourse()
   const deleteCourse = useDeleteCourse()
 
-  const courses = coursesQuery.data?.results ?? []
-  const semesters = semestersQuery.data?.results ?? []
-  const regulations = regulationsQuery.data?.results ?? []
-  const programs = programsQuery.data?.results ?? []
+  const courses = coursesQuery.data?.results ?? EMPTY_COURSES
+  const semesters = semestersQuery.data?.results ?? EMPTY_SEMESTERS
+  const regulations = regulationsQuery.data?.results ?? EMPTY_REGULATIONS
+  const programs = programsQuery.data?.results ?? EMPTY_PROGRAMS
 
   /*
    * Build a program lookup from the existing semester data.
