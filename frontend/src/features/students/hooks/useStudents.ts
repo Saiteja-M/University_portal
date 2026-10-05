@@ -9,6 +9,8 @@ import {
   studentsApi,
   type EnrollmentCreateData,
   type EnrollmentUpdateData,
+  type CourseOfferingEnrollmentCreateData,
+  type CourseOfferingEnrollmentUpdateData,
   type GuardianCreateData,
   type GuardianUpdateData,
   type StudentCreateData,
@@ -435,3 +437,49 @@ export function useUpdateEnrollment(
   })
 }
   
+
+// -----------------------------------------------------------------------------
+// Course offering enrollments
+// -----------------------------------------------------------------------------
+
+export function useCourseOfferingEnrollments(params?: Record<string, string | number | boolean>) {
+  return useQuery({
+    queryKey: [...studentQueryKeys.all, 'course-offering-enrollments', params],
+    queryFn: () => studentsApi.courseOfferingEnrollments.list(params),
+  })
+}
+
+export function useCreateCourseOfferingEnrollment() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data: CourseOfferingEnrollmentCreateData) =>
+      studentsApi.courseOfferingEnrollments.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...studentQueryKeys.all, 'course-offering-enrollments'] })
+      queryClient.invalidateQueries({ queryKey: studentQueryKeys.me() })
+    },
+  })
+}
+
+export function useUpdateCourseOfferingEnrollment() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: CourseOfferingEnrollmentUpdateData }) =>
+      studentsApi.courseOfferingEnrollments.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...studentQueryKeys.all, 'course-offering-enrollments'] })
+      queryClient.invalidateQueries({ queryKey: studentQueryKeys.me() })
+    },
+  })
+}
+
+export function useDeleteCourseOfferingEnrollment() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => studentsApi.courseOfferingEnrollments.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [...studentQueryKeys.all, 'course-offering-enrollments'] })
+      queryClient.invalidateQueries({ queryKey: studentQueryKeys.me() })
+    },
+  })
+}
