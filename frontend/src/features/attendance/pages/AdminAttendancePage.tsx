@@ -50,9 +50,17 @@ export default function AdminAttendancePage() {
   const filteredSemesters = useMemo(() => semesters.data?.filter(s => s.id === Number(semester) || !semester) ?? [], [semesters.data, semester])
   const filteredCourses = useMemo(() => courses.data?.filter(c => c.id === Number(course) || !course) ?? [], [courses.data, course])
 
-  const downloadExcel = () => {
-    const params = new URLSearchParams({ program, academic_year: academicYear, semester, course, export: 'excel' })
-    window.open('/api/v1/attendance/sessions/class-report/?' + params.toString(), '_blank')
+  const downloadExcel = async () => {
+    const params = { program: Number(program), academic_year: Number(academicYear), semester: Number(semester), course: Number(course), export: 'excel' }
+    const response = await apiClient.get('/attendance/sessions/class-report/', { params, responseType: 'blob' })
+    const url = URL.createObjectURL(response.data)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'attendance-report.xlsx'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
   }
 
   return (
