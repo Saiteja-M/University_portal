@@ -33,16 +33,16 @@ def mark_attendance(
             "Attendance data cannot be empty."
         )
 
+    # Lock only the AttendanceSession row.
+    #
+    # Do not combine select_for_update() with select_related() here.
+    # PostgreSQL rejects FOR UPDATE when the query contains an OUTER JOIN
+    # whose nullable side could be locked. The optional CourseOffering
+    # relation is nullable, so keeping this lock query deliberately
+    # single-table makes the transaction portable and PostgreSQL-safe.
     session = (
         AttendanceSession.objects
-        .select_for_update(of=("self",))
-        .select_related(
-            "faculty",
-            "course",
-            "academic_year",
-            "semester",
-            "offering",
-        )
+        .select_for_update()
         .get(pk=session.pk)
     )
 
