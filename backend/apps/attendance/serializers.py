@@ -1,11 +1,36 @@
 from rest_framework import serializers
 from apps.students.models import Student
+from apps.academics.models import CourseOffering
 
 
 from .models import AttendanceRecord, AttendanceSession
 
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
+    offering = serializers.PrimaryKeyRelatedField(
+        queryset=CourseOffering.objects.select_related(
+            "course",
+            "academic_year",
+            "semester",
+        ),
+        required=True,
+    )
+
+    offering_course_code = serializers.CharField(
+        source="offering.course.code",
+        read_only=True,
+    )
+
+    offering_course_name = serializers.CharField(
+        source="offering.course.name",
+        read_only=True,
+    )
+
+    offering_section = serializers.CharField(
+        source="offering.section",
+        read_only=True,
+    )
+
     faculty_employee_id = serializers.CharField(
         source="faculty.employee_id",
         read_only=True,
@@ -40,7 +65,14 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "faculty",
+            "offering",
+            "offering_course_code",
+            "offering_course_name",
+            "offering_section",
             "faculty_employee_id",
+            "offering_course_code",
+            "offering_course_name",
+            "offering_section",
             "faculty_name",
             "course",
             "course_code",
