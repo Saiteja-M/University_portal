@@ -412,22 +412,27 @@ class StudentViewSet(
                 }
             )
 
-        courses = (
-            Course.objects
+        offering_enrollments = (
+            CourseOfferingEnrollment.objects
             .filter(
-                semester=enrollment.semester,
-                is_active=True,
+                student_enrollment=enrollment,
+                status=CourseOfferingEnrollment.Status.ENROLLED,
+                offering__is_active=True,
+                offering__status__in=["PLANNED", "OPEN"],
             )
             .select_related(
-                "semester",
-                "semester__program",
-                "semester__academic_year",
-                "regulation",
+                "offering",
+                "offering__course",
+                "offering__course__semester",
+                "offering__course__regulation",
             )
             .order_by(
-                "code",
+                "offering__course__code",
+                "offering__section",
             )
         )
+
+        courses = [item.offering.course for item in offering_enrollments]
 
         serializer = StudentCourseSerializer(
             courses,
