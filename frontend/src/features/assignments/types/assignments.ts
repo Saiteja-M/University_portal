@@ -1,0 +1,9 @@
+export type AssignmentStatus='DRAFT'|'PUBLISHED'|'CLOSED'
+export type SubmissionStatus='SUBMITTED'|'GRADED'|'LATE'
+export interface PaginatedResponse<T>{count:number;next:string|null;previous:string|null;results:T[]}
+export interface Assignment{id:number;offering:number;course_code:string;course_name:string;section:string;academic_year_name:string;semester_number:number;program_name:string;title:string;description:string;due_date:string;max_marks:number;attachment:string|null;status:AssignmentStatus;is_active:boolean;submission_count:number;created_at:string;updated_at:string}
+export interface AssignmentCreateData{offering:number;title:string;description?:string;due_date:string;max_marks:number;status?:AssignmentStatus;is_active?:boolean;attachment?:File|null}
+export type AssignmentUpdateData=Partial<AssignmentCreateData>
+export interface AssignmentSubmission{id:number;assignment:number;assignment_title:string;course_code:string;student:number;student_id:string;student_name:string;submitted_at:string;file:string|null;answer_text:string;marks:number|null;feedback:string;status:SubmissionStatus;created_at:string;updated_at:string}
+export interface AssignmentSubmissionCreateData{assignment:number;answer_text?:string;file?:File|null}
+export interface AssignmentSubmissionUpdateData{marks?:number|null;feedback?:string;status?:SubmissionStatus}
