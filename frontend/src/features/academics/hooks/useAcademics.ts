@@ -11,6 +11,8 @@ import {
   type AcademicYearUpdateData,
   type CourseCreateData,
   type CourseUpdateData,
+  type CourseOfferingCreateData,
+  type CourseOfferingUpdateData,
   type DepartmentCreateData,
   type DepartmentUpdateData,
   type ProgramCreateData,
@@ -41,6 +43,9 @@ const academicsKeys = {
   courses: (
     params?: AcademicListParams,
   ) => ['academics', 'courses', params] as const,
+  courseOfferings: (
+    params?: AcademicListParams,
+  ) => ['academics', 'course-offerings', params] as const,
 }
 
 export function useDepartments(
@@ -405,11 +410,7 @@ export function useCourseOfferings(
   params?: AcademicListParams,
 ) {
   return useQuery({
-    queryKey: [
-      ...academicsKeys.all,
-      'course-offerings',
-      params ?? {},
-    ],
+    queryKey: academicsKeys.courseOfferings(params),
     queryFn: () =>
       academicsApi.courseOfferings.list(params),
   })
