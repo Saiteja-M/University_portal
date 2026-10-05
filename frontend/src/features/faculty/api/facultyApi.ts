@@ -2,13 +2,16 @@ import { apiClient } from "../../../lib/axios";
 
 import type {
   Faculty,
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfile,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
   FacultyQualification,
   FacultyExperience,
   FacultyCourseAssignment,
-} from "../types/faculty.types";
-
-import type {
-  FacultyCreateData,
+  FacultyCourseAssignmentCreateData,
+  FacultyCourseAssignmentUpdateData,
 } from "../types/faculty";
 /* =========================================================
    Generic API Types
@@ -43,17 +46,7 @@ export interface FacultyListParams {
 ========================================================= */
 
 
-export type FacultyUpdateData = Partial<Faculty>;
 
-export type FacultyProfileCreateData = FormData;
-
-export type FacultyProfileUpdateData = FormData;
-
-export type FacultyCourseAssignmentCreateData =
-  Partial<FacultyCourseAssignment>;
-
-export type FacultyCourseAssignmentUpdateData =
-  Partial<FacultyCourseAssignment>;
 
 /* =========================================================
    Faculty API
@@ -62,7 +55,7 @@ export type FacultyCourseAssignmentUpdateData =
 const faculty = {
   list: async (
     params?: FacultyListParams,
-  ): Promise<PaginatedResponse<Faculty>> => {
+  ): Promise<PaginatedResponse<FacultyProfile>> => {
     const response = await apiClient.get<
       PaginatedResponse<Faculty>
     >(
@@ -125,7 +118,7 @@ const faculty = {
 const profiles = {
   list: async (
     params?: { faculty?: number },
-  ): Promise<PaginatedResponse<Faculty>> => {
+  ): Promise<PaginatedResponse<FacultyProfile>> => {
     const response =
       await apiClient.get<
         PaginatedResponse<Faculty>
@@ -141,7 +134,7 @@ const profiles = {
     id: number,
   ): Promise<Faculty> => {
     const response =
-      await apiClient.get<Faculty>(
+      await apiClient.get<FacultyProfile>(
         `/faculty/profiles/${id}/`,
       );
 
@@ -150,9 +143,9 @@ const profiles = {
 
   create: async (
     data: FacultyProfileCreateData,
-  ): Promise<Faculty> => {
+  ): Promise<FacultyProfile> => {
     const response =
-      await apiClient.post<Faculty>(
+      await apiClient.post<FacultyProfile>(
         "/faculty/profiles/",
         data,
       );
@@ -163,9 +156,9 @@ const profiles = {
   update: async (
     id: number,
     data: FacultyProfileUpdateData,
-  ): Promise<Faculty> => {
+  ): Promise<FacultyProfile> => {
     const response =
-      await apiClient.patch<Faculty>(
+      await apiClient.patch<FacultyProfile>(
         `/faculty/profiles/${id}/`,
         data,
       );
