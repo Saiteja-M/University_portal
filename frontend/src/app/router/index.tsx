@@ -512,17 +512,6 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: 'faculty/assignments',
-        element: (
-          <FacultyRoute>
-            <AppShell>
-              <AssignmentsPage />
-            </AppShell>
-          </FacultyRoute>
-        ),
-      },
-
-      {
         path: 'student/assignments',
         element: (
           <StudentRoute>
