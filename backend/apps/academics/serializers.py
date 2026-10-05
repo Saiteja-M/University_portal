@@ -216,6 +216,10 @@ class CourseSerializer(serializers.ModelSerializer):
             "code",
             "name",
             "credits",
+            "lecture_hours",
+            "tutorial_hours",
+            "practical_hours",
+            "course_category",
             "is_active",
             "created_at",
             "updated_at",
@@ -241,6 +245,27 @@ class CourseSerializer(serializers.ModelSerializer):
                 "Credits must be between 0 and 30."
             )
 
+        return value
+
+    def validate_lecture_hours(self, value):
+        if value > 20:
+            raise serializers.ValidationError(
+                "Lecture hours must be between 0 and 20."
+            )
+        return value
+
+    def validate_tutorial_hours(self, value):
+        if value > 20:
+            raise serializers.ValidationError(
+                "Tutorial hours must be between 0 and 20."
+            )
+        return value
+
+    def validate_practical_hours(self, value):
+        if value > 30:
+            raise serializers.ValidationError(
+                "Practical hours must be between 0 and 30."
+            )
         return value
 
     def validate(self, attrs):
