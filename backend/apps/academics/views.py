@@ -8,6 +8,7 @@ from .models import (
     Program,
     Regulation,
     Semester,
+    CourseOffering,
 )
 
 from .permissions import (
@@ -22,6 +23,7 @@ from .serializers import (
     ProgramSerializer,
     RegulationSerializer,
     SemesterSerializer,
+    CourseOfferingSerializer,
 )
 
 
@@ -226,5 +228,49 @@ class CourseViewSet(
         "semester__program",
         "regulation",
         "credits",
+        "is_active",
+    ]
+
+class CourseOfferingViewSet(
+    AcademicsViewSetMixin,
+    viewsets.ModelViewSet,
+):
+    queryset = CourseOffering.objects.select_related(
+        "course",
+        "academic_year",
+        "semester",
+        "semester__program",
+    )
+    serializer_class = CourseOfferingSerializer
+
+    search_fields = [
+        "course__code",
+        "course__name",
+        "section",
+        "academic_year__name",
+        "semester__program__name",
+    ]
+
+    ordering_fields = [
+        "section",
+        "capacity",
+        "status",
+        "created_at",
+    ]
+
+    ordering = [
+        "-academic_year__start_date",
+        "semester__number",
+        "course__code",
+        "section",
+    ]
+
+    filterset_fields = [
+        "course",
+        "academic_year",
+        "semester",
+        "semester__program",
+        "section",
+        "status",
         "is_active",
     ]
