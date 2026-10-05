@@ -1,3 +1,5 @@
+const EMPTY_REGULATIONS: never[] = []
+
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -59,7 +61,7 @@ export default function RegulationsPage() {
 
   const [formError, setFormError] = useState('')
 
-  const regulations = regulationsData?.results ?? []
+  const regulations = regulationsData?.results ?? EMPTY_REGULATIONS
   const programs = programsData?.results ?? []
 
   const filteredRegulations = useMemo(() => {
