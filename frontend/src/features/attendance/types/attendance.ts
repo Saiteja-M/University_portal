@@ -7,6 +7,10 @@ export interface AttendanceSession {
   id: number
 
   faculty: number
+  offering: number
+  offering_course_code: string
+  offering_course_name: string
+  offering_section: string
   faculty_employee_id: string
   faculty_name: string
 

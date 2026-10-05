@@ -11,6 +11,8 @@ import {
   type AcademicYearUpdateData,
   type CourseCreateData,
   type CourseUpdateData,
+  type CourseOfferingCreateData,
+  type CourseOfferingUpdateData,
   type DepartmentCreateData,
   type DepartmentUpdateData,
   type ProgramCreateData,
@@ -41,6 +43,9 @@ const academicsKeys = {
   courses: (
     params?: AcademicListParams,
   ) => ['academics', 'courses', params] as const,
+  courseOfferings: (
+    params?: AcademicListParams,
+  ) => ['academics', 'course-offerings', params] as const,
 }
 
 export function useDepartments(
@@ -393,6 +398,65 @@ export function useDeleteCourse() {
   return useMutation({
     mutationFn: (id: number) =>
       academicsApi.courses.delete(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
+
+export function useCourseOfferings(
+  params?: AcademicListParams,
+) {
+  return useQuery({
+    queryKey: academicsKeys.courseOfferings(params),
+    queryFn: () =>
+      academicsApi.courseOfferings.list(params),
+  })
+}
+
+export function useCreateCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (
+      data: CourseOfferingCreateData,
+    ) => academicsApi.courseOfferings.create(data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
+
+export function useUpdateCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number
+      data: CourseOfferingUpdateData
+    }) =>
+      academicsApi.courseOfferings.update(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
+
+export function useDeleteCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      academicsApi.courseOfferings.delete(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: academicsKeys.all,

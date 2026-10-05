@@ -177,7 +177,22 @@ class Course(TimeStampedModel):
     )
     code = models.CharField(max_length=30)
     name = models.CharField(max_length=200)
+    class CourseCategory(models.TextChoices):
+        THEORY = "THEORY", "Theory"
+        LABORATORY = "LABORATORY", "Laboratory"
+        PROJECT = "PROJECT", "Project"
+        SEMINAR = "SEMINAR", "Seminar"
+        OTHER = "OTHER", "Other"
+
     credits = models.PositiveSmallIntegerField(default=0)
+    lecture_hours = models.PositiveSmallIntegerField(default=0)
+    tutorial_hours = models.PositiveSmallIntegerField(default=0)
+    practical_hours = models.PositiveSmallIntegerField(default=0)
+    course_category = models.CharField(
+        max_length=20,
+        choices=CourseCategory.choices,
+        default=CourseCategory.THEORY,
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -203,3 +218,82 @@ class Course(TimeStampedModel):
 
     def __str__(self):
         return f"{self.regulation.code} - {self.code}"
+
+class CourseOffering(TimeStampedModel):
+    """
+    A concrete delivery of a course for an academic year, semester,
+    and section.
+
+    Course is curriculum master data; CourseOffering is the operational
+    instance that downstream modules will reference.
+    """
+
+    class Status(models.TextChoices):
+        PLANNED = "PLANNED", "Planned"
+        OPEN = "OPEN", "Open"
+        CLOSED = "CLOSED", "Closed"
+        CANCELLED = "CANCELLED", "Cancelled"
+
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.PROTECT,
+        related_name="offerings",
+    )
+    academic_year = models.ForeignKey(
+        AcademicYear,
+        on_delete=models.PROTECT,
+        related_name="course_offerings",
+    )
+    semester = models.ForeignKey(
+        Semester,
+        on_delete=models.PROTECT,
+        related_name="course_offerings",
+    )
+    section = models.CharField(max_length=50)
+    capacity = models.PositiveIntegerField(default=60)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PLANNED,
+    )
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = [
+            "-academic_year__start_date",
+            "semester__number",
+            "course__code",
+            "section",
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["course", "academic_year", "semester", "section"],
+                name="unique_course_offering",
+            ),
+        ]
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        errors = {}
+
+        if self.course_id and self.semester_id:
+            if self.course.semester_id != self.semester_id:
+                errors["semester"] = (
+                    "The selected semester must match the course semester."
+                )
+
+        if self.semester_id and self.academic_year_id:
+            if self.semester.academic_year_id != self.academic_year_id:
+                errors["academic_year"] = (
+                    "The selected academic year must match the semester."
+                )
+
+        if errors:
+            raise ValidationError(errors)
+
+    def __str__(self):
+        return (
+            f"{self.course.code} - {self.academic_year.name} - "
+            f"Sem {self.semester.number} - {self.section}"
+        )

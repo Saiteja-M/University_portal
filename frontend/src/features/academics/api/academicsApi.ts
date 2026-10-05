@@ -2,6 +2,7 @@ import { apiClient } from '../../../lib/axios'
 import type {
   AcademicYear,
   Course,
+  CourseOffering,
   Department,
   Program,
   Regulation,
@@ -80,11 +81,27 @@ export interface CourseCreateData {
   code: string
   name: string
   credits: number
+  lecture_hours?: number
+  tutorial_hours?: number
+  practical_hours?: number
+  course_category?: Course['course_category']
   is_active?: boolean
 }
 
-export type CourseUpdateData =
-  Partial<CourseCreateData>
+export interface CourseOfferingCreateData {
+  course: number
+  academic_year: number
+  semester: number
+  section: string
+  capacity: number
+  status?: CourseOffering['status']
+  is_active?: boolean
+}
+
+export type CourseUpdateData = Partial<CourseCreateData>
+
+export type CourseOfferingUpdateData =
+  Partial<CourseOfferingCreateData>
 
 export const academicsApi = {
   departments: {
@@ -302,6 +319,42 @@ export const academicsApi = {
     delete: (id: number) =>
       apiClient.delete(
         `/academics/courses/${id}/`,
+      ),
+  },
+
+  courseOfferings: {
+    list: (
+      params?: AcademicListParams,
+    ) =>
+      apiClient.get<
+        PaginatedResponse<CourseOffering>
+      >('/academics/course-offerings/', {
+        params,
+      }).then((response) => response.data),
+
+    get: (id: number) =>
+      apiClient.get<CourseOffering>(
+        `/academics/course-offerings/${id}/`,
+      ).then((response) => response.data),
+
+    create: (data: CourseOfferingCreateData) =>
+      apiClient.post<CourseOffering>(
+        '/academics/course-offerings/',
+        data,
+      ).then((response) => response.data),
+
+    update: (
+      id: number,
+      data: CourseOfferingUpdateData,
+    ) =>
+      apiClient.patch<CourseOffering>(
+        `/academics/course-offerings/${id}/`,
+        data,
+      ).then((response) => response.data),
+
+    delete: (id: number) =>
+      apiClient.delete(
+        `/academics/course-offerings/${id}/`,
       ),
   },
 }

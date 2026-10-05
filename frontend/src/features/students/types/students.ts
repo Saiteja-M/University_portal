@@ -276,3 +276,40 @@ export interface PaginatedResponse<T> {
   previous: string | null
   results: T[]
 }
+
+// ─────────────────────────────────────────────
+// Course Offering Enrollment
+// ─────────────────────────────────────────────
+
+export type CourseOfferingEnrollmentStatus =
+  | 'ENROLLED'
+  | 'DROPPED'
+  | 'COMPLETED'
+
+export interface CourseOfferingEnrollment {
+  id: number
+  student_enrollment: number
+  student_id: string
+  student_name: string
+  offering: number
+  course_code: string
+  course_name: string
+  academic_year_name: string
+  semester_number: number
+  program_name: string
+  section: string
+  status: CourseOfferingEnrollmentStatus
+  enrolled_date: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CourseOfferingEnrollmentCreateData {
+  student_enrollment: number
+  offering: number
+  status?: CourseOfferingEnrollmentStatus
+  enrolled_date: string
+}
+
+export type CourseOfferingEnrollmentUpdateData =
+  Partial<Omit<CourseOfferingEnrollmentCreateData, 'student_enrollment'>>

@@ -51,6 +51,14 @@ urlpatterns = [
         include("apps.faculty.urls"),
     ),
     path(
+        "timetable/",
+        include("apps.timetable.urls"),
+    ),
+    path(
+        "assignments/",
+        include("apps.assignments.urls"),
+    ),
+    path(
     "examinations/",
     include("apps.examinations.urls"),
 ),

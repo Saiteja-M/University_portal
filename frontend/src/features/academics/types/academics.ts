@@ -4,6 +4,7 @@ export interface PaginatedResponse<T> {
   previous: string | null
   results: T[]
 }
+
 export interface Department {
   id: number
   code: string
@@ -13,7 +14,6 @@ export interface Department {
   created_at: string
   updated_at: string
 }
-
 
 export interface Program {
   id: number
@@ -65,6 +65,13 @@ export interface Semester {
   updated_at: string
 }
 
+export type CourseCategory =
+  | 'THEORY'
+  | 'LABORATORY'
+  | 'PROJECT'
+  | 'SEMINAR'
+  | 'OTHER'
+
 export interface Course {
   id: number
   semester: number
@@ -75,6 +82,34 @@ export interface Course {
   code: string
   name: string
   credits: number
+  lecture_hours: number
+  tutorial_hours: number
+  practical_hours: number
+  course_category: CourseCategory
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type CourseOfferingStatus =
+  | 'PLANNED'
+  | 'OPEN'
+  | 'CLOSED'
+  | 'CANCELLED'
+
+export interface CourseOffering {
+  id: number
+  course: number
+  course_code: string
+  course_name: string
+  academic_year: number
+  academic_year_name: string
+  semester: number
+  semester_number: number
+  program_name: string
+  section: string
+  capacity: number
+  status: CourseOfferingStatus
   is_active: boolean
   created_at: string
   updated_at: string

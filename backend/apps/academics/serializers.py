@@ -7,6 +7,7 @@ from .models import (
     Program,
     Regulation,
     Semester,
+    CourseOffering,
 )
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -215,6 +216,10 @@ class CourseSerializer(serializers.ModelSerializer):
             "code",
             "name",
             "credits",
+            "lecture_hours",
+            "tutorial_hours",
+            "practical_hours",
+            "course_category",
             "is_active",
             "created_at",
             "updated_at",
@@ -242,6 +247,27 @@ class CourseSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_lecture_hours(self, value):
+        if value > 20:
+            raise serializers.ValidationError(
+                "Lecture hours must be between 0 and 20."
+            )
+        return value
+
+    def validate_tutorial_hours(self, value):
+        if value > 20:
+            raise serializers.ValidationError(
+                "Tutorial hours must be between 0 and 20."
+            )
+        return value
+
+    def validate_practical_hours(self, value):
+        if value > 30:
+            raise serializers.ValidationError(
+                "Practical hours must be between 0 and 30."
+            )
+        return value
+
     def validate(self, attrs):
         semester = attrs.get("semester")
         regulation = attrs.get("regulation")
@@ -254,5 +280,81 @@ class CourseSerializer(serializers.ModelSerializer):
                         "to the selected semester's program."
                     )
                 })
+
+        return attrs
+
+class CourseOfferingSerializer(serializers.ModelSerializer):
+    course_code = serializers.CharField(source="course.code", read_only=True)
+    course_name = serializers.CharField(source="course.name", read_only=True)
+    academic_year_name = serializers.CharField(
+        source="academic_year.name",
+        read_only=True,
+    )
+    semester_number = serializers.IntegerField(
+        source="semester.number",
+        read_only=True,
+    )
+    program_name = serializers.CharField(
+        source="semester.program.name",
+        read_only=True,
+    )
+
+    class Meta:
+        model = CourseOffering
+        fields = [
+            "id",
+            "course",
+            "course_code",
+            "course_name",
+            "academic_year",
+            "academic_year_name",
+            "semester",
+            "semester_number",
+            "program_name",
+            "section",
+            "capacity",
+            "status",
+            "is_active",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "id",
+            "course_code",
+            "course_name",
+            "academic_year_name",
+            "semester_number",
+            "program_name",
+            "created_at",
+            "updated_at",
+        ]
+
+    def validate_capacity(self, value):
+        if value < 1 or value > 1000:
+            raise serializers.ValidationError(
+                "Capacity must be between 1 and 1000."
+            )
+        return value
+
+    def validate_section(self, value):
+        value = value.strip().upper()
+        if not value:
+            raise serializers.ValidationError("Section is required.")
+        return value
+
+    def validate(self, attrs):
+        course = attrs.get("course")
+        semester = attrs.get("semester")
+        academic_year = attrs.get("academic_year")
+
+        if course and semester and course.semester_id != semester.id:
+            raise serializers.ValidationError({
+                "semester": "The selected semester must match the course semester."
+            })
+
+        if semester and academic_year and semester.academic_year_id != academic_year.id:
+            raise serializers.ValidationError({
+                "academic_year": "The selected academic year must match the semester."
+            })
 
         return attrs

@@ -259,83 +259,35 @@ class FacultyCourseAssignment(TimeStampedModel):
         related_name="course_assignments",
     )
 
-    course = models.ForeignKey(
-        "academics.Course",
+    offering = models.ForeignKey(
+        "academics.CourseOffering",
         on_delete=models.PROTECT,
         related_name="faculty_assignments",
     )
 
-    academic_year = models.ForeignKey(
-        "academics.AcademicYear",
-        on_delete=models.PROTECT,
-        related_name="faculty_course_assignments",
-    )
-
-    semester = models.ForeignKey(
-        "academics.Semester",
-        on_delete=models.PROTECT,
-        related_name="faculty_course_assignments",
-    )
-
-    section = models.CharField(
-        max_length=50,
-        blank=True,
-    )
-
     assigned_date = models.DateField()
 
-    is_active = models.BooleanField(
-        default=True,
-    )
+    is_active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = [
-            "-assigned_date",
-            "faculty",
-            "course",
-        ]
-
+        ordering = ["-assigned_date", "faculty", "offering"]
         constraints = [
             models.UniqueConstraint(
-                fields=[
-                    "faculty",
-                    "course",
-                    "academic_year",
-                    "semester",
-                    "section",
-                ],
-                name="unique_faculty_course_assignment",
+                fields=["faculty", "offering"],
+                name="unique_faculty_course_offering_assignment",
             )
         ]
 
     def clean(self):
-        from django.core.exceptions import ValidationError
-
-        if self.course_id and self.semester_id:
-            if self.course.semester_id != self.semester_id:
-                raise ValidationError(
-                    {
-                        "semester": (
-                            "The selected semester must match "
-                            "the course semester."
-                        )
-                    }
-                )
-
-        if self.course_id and self.academic_year_id:
-            if self.course.semester.academic_year_id != self.academic_year_id:
-                raise ValidationError(
-                    {
-                        "academic_year": (
-                            "The selected academic year must match "
-                            "the course academic year."
-                        )
-                    }
-                )
+        if self.offering_id and self.faculty_id:
+            if not self.offering.is_active:
+                raise ValidationError({"offering": "The selected course offering is inactive."})
+            if self.offering.status in {"CLOSED", "CANCELLED"}:
+                raise ValidationError({"offering": "Closed or cancelled course offerings cannot receive faculty assignments."})
 
     def __str__(self):
         return (
             f"{self.faculty.faculty_id} - "
-            f"{self.course.code} - "
-            f"{self.academic_year}"
+            f"{self.offering.course.code} - "
+            f"{self.offering.academic_year.name}"
         )
