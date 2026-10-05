@@ -225,7 +225,7 @@ export default function CourseOfferingsPage() {
                       semester: '',
                     }))
                   }
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
                   <option value="">Select course</option>
                   {courses.map((course) => (
@@ -245,7 +245,7 @@ export default function CourseOfferingsPage() {
                       academic_year: e.target.value,
                     }))
                   }
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
                   <option value="">Select academic year</option>
                   {years.map((year) => (
@@ -265,7 +265,7 @@ export default function CourseOfferingsPage() {
                       semester: e.target.value,
                     }))
                   }
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
                   <option value="">Select semester</option>
                   {compatibleSemesters.map((semester) => (
@@ -286,7 +286,7 @@ export default function CourseOfferingsPage() {
                     }))
                   }
                   placeholder="A"
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </Field>
 
@@ -301,7 +301,7 @@ export default function CourseOfferingsPage() {
                       capacity: e.target.value,
                     }))
                   }
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </Field>
 
@@ -314,7 +314,7 @@ export default function CourseOfferingsPage() {
                       status: e.target.value as CourseOfferingStatus,
                     }))
                   }
-                  className="input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 >
                   {statuses.map((item) => (
                     <option key={item} value={item}>
@@ -352,7 +352,7 @@ export default function CourseOfferingsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Course, section, academic year..."
-                className="input"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </Field>
 
@@ -362,7 +362,7 @@ export default function CourseOfferingsPage() {
                 onChange={(e) =>
                   setStatus(e.target.value as CourseOfferingStatus | '')
                 }
-                className="input"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               >
                 <option value="">All statuses</option>
                 {statuses.map((item) => (
@@ -378,7 +378,7 @@ export default function CourseOfferingsPage() {
                 value={section}
                 onChange={(e) => setSection(e.target.value.toUpperCase())}
                 placeholder="A"
-                className="input"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </Field>
           </div>
