@@ -1,3 +1,5 @@
+const EMPTY_SLOTS: never[] = []
+
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { CalendarDays, Clock3, MapPin, UserRound } from 'lucide-react'
@@ -14,7 +16,7 @@ export default function MyTimetablePage({ role }: { role: 'FACULTY' | 'STUDENT' 
   const [day,setDay]=useState<DayOfWeek|''>('')
   const [search,setSearch]=useState('')
   const query=useQuery({queryKey:['my-timetable',role,day,search],queryFn:()=>role==='FACULTY'?timetableApi.myFaculty({...day?{day_of_week:day}:{},...search?{search}:{}}):timetableApi.myStudent({...day?{day_of_week:day}:{},...search?{search}:{}})})
-  const slots=query.data?.results??[]
+  const slots=query.data?.results??EMPTY_SLOTS
   const grouped=useMemo(()=>new Map(slots.map(s=>[s.day_of_week+'-'+s.period,s])),[slots])
   const title=role==='FACULTY'?'My Teaching Timetable':'My Class Timetable'
   const subtitle=role==='FACULTY'?'Your active teaching schedule from assigned course offerings.':'Your timetable contains only course offerings in which you are actively enrolled.'
