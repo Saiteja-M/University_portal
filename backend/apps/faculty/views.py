@@ -1,27 +1,11 @@
 from rest_framework import viewsets
-
-from .models import (
-    Faculty,
-    FacultyProfile,
-    FacultyQualification,
-    FacultyExperience,
-    FacultyCourseAssignment,
-)
-from .serializers import (
-    FacultySerializer,
-    FacultyProfileSerializer,
-    FacultyQualificationSerializer,
-    FacultyExperienceSerializer,
-    FacultyCourseAssignmentSerializer,
-)
+from .models import Faculty, FacultyProfile, FacultyQualification, FacultyExperience, FacultyCourseAssignment
+from .serializers_core import FacultySerializer, FacultyProfileSerializer, FacultyQualificationSerializer, FacultyExperienceSerializer, FacultyCourseAssignmentSerializer
 from .permissions import FacultyAccessPermission
 
 
 class FacultyViewSet(viewsets.ModelViewSet):
-    queryset = (
-        Faculty.objects.select_related("department", "user", "profile")
-        .prefetch_related("qualifications", "experiences")
-    )
+    queryset = Faculty.objects.select_related("department", "user", "profile").prefetch_related("qualifications", "experiences")
     serializer_class = FacultySerializer
     permission_classes = [FacultyAccessPermission]
 
