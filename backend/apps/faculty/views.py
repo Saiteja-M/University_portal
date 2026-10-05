@@ -61,11 +61,15 @@ class FacultyCourseAssignmentViewSet(viewsets.ModelViewSet):
         .select_related(
             "faculty",
             "faculty__profile",
-            "course",
-            "academic_year",
-            "semester",
+            "offering",
+            "offering__course",
+            "offering__academic_year",
+            "offering__semester",
+            "offering__semester__program",
         )
     )
 
     serializer_class = FacultyCourseAssignmentSerializer
+    permission_classes = [FacultyAccessPermission]
+er
     permission_classes = [FacultyAccessPermission]
