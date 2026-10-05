@@ -27,6 +27,7 @@ export interface EnrolledStudentListParams {
 }
 export interface CreateAttendanceSessionData {
   faculty: number
+  offering: number
   course: number
   academic_year: number
   semester: number
