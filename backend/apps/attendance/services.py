@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Count, Q
 from rest_framework.exceptions import ValidationError
 
-from apps.students.models import Student
+from apps.students.models import Student, CourseOfferingEnrollment
 
 from .models import AttendanceRecord, AttendanceSession
 
@@ -41,6 +41,7 @@ def mark_attendance(
             "course",
             "academic_year",
             "semester",
+            "offering",
         )
         .get(pk=session.pk)
     )
@@ -82,6 +83,17 @@ def mark_attendance(
         student_id = item["student_id"]
         status_value = item["status"]
         remarks = item.get("remarks", "")
+
+        if session.offering_id:
+            if not CourseOfferingEnrollment.objects.filter(
+                student_enrollment__student_id=student_id,
+                offering_id=session.offering_id,
+                status=CourseOfferingEnrollment.Status.ENROLLED,
+                student_enrollment__status="ACTIVE",
+            ).exists():
+                raise ValidationError(
+                    "The student is not enrolled in this course offering."
+                )
 
         existing = (
             AttendanceRecord.objects
