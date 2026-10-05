@@ -265,7 +265,7 @@ export default function CourseCreatePage() {
 
             <SelectField
               label="Regulation"
-              disabled={!selectedProgram || regulationState === 'error'}
+              
               error={errors.regulation?.message}
               {...register('regulation')}
             >
@@ -289,11 +289,7 @@ export default function CourseCreatePage() {
 
             <SelectField
               label="Semester"
-              disabled={
-                !selectedProgram ||
-                !selectedAcademicYear ||
-                semesterState === 'error'
-              }
+              
               error={errors.semester?.message}
               {...register('semester')}
             >
@@ -442,7 +438,7 @@ const SelectField = ({
       {label}
     </label>
     <select
-      className={`w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-gray-100 ${className}`}
+      className={`w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:cursor-not-allowed disabled:bg-gray-100 ${className}`}
       {...props}
     >
       {children}
