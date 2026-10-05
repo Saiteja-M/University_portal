@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Exam, StudentResult
-from .permissions import IsAuthenticatedStudent, IsExaminationManager
+from .permissions import IsAuthenticatedStudent, IsExaminationManager, IsFacultyExamViewer
 from .serializers import (
     AdminStudentResultSerializer,
     ExamSerializer,
@@ -170,3 +170,60 @@ class MyResultsSummaryView(APIView):
             "semester_count": len(response_semesters),
             "semesters": response_semesters,
         })
+
+
+class FacultyExamViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ExamSerializer
+    permission_classes = [IsFacultyExamViewer]
+    filterset_fields = ["exam_type", "semester", "is_published", "is_active"]
+    search_fields = ["name"]
+    ordering_fields = ["start_date", "end_date", "name"]
+    ordering = ["-start_date", "name"]
+
+    def get_queryset(self):
+        queryset = Exam.objects.select_related(
+            "semester", "semester__academic_year", "semester__program"
+        ).all()
+        user = self.request.user
+        if user.is_superuser or user.groups.filter(
+            name__in={"ADMIN", "HOD"}
+        ).exists():
+            return queryset
+        faculty = getattr(user, "faculty", None)
+        if faculty is None:
+            return queryset.none()
+        return queryset.filter(
+            student_results__course_offering__faculty_assignments__faculty=faculty,
+            student_results__course_offering__faculty_assignments__is_active=True,
+        ).distinct()
+
+
+class FacultyResultViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = AdminStudentResultSerializer
+    permission_classes = [IsFacultyExamViewer]
+    filterset_fields = ["exam", "course_offering", "status"]
+    search_fields = [
+        "student__student_id", "student__user__first_name",
+        "student__user__last_name", "course_offering__course__code",
+        "course_offering__course__name", "course_offering__section",
+    ]
+    ordering_fields = ["created_at", "marks", "course_offering__course__code"]
+    ordering = ["course_offering__course__code", "student__student_id"]
+
+    def get_queryset(self):
+        queryset = StudentResult.objects.select_related(
+            "student", "student__user", "exam", "exam__semester",
+            "course_offering", "course_offering__course",
+        ).all()
+        user = self.request.user
+        if user.is_superuser or user.groups.filter(
+            name__in={"ADMIN", "HOD"}
+        ).exists():
+            return queryset
+        faculty = getattr(user, "faculty", None)
+        if faculty is None:
+            return queryset.none()
+        return queryset.filter(
+            course_offering__faculty_assignments__faculty=faculty,
+            course_offering__faculty_assignments__is_active=True,
+        ).distinct()
