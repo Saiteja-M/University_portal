@@ -23,7 +23,11 @@ def migrate_assignments_to_offerings(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    # This migration creates CourseOffering rows and then alters the same table\n    # by changing/removing related foreign keys. PostgreSQL otherwise keeps\n    # trigger events pending until the surrounding transaction commits.\n    atomic = False\n
+    # Keep data migration separate from schema changes. PostgreSQL can reject
+    # later ALTER TABLE statements when trigger events from the data migration
+    # are still pending in the same migration transaction.
+    atomic = False
+
     dependencies = [
         ("academics", "0004_course_offering_and_course_hours"),
         ("faculty", "0003_alter_faculty_faculty_id_and_more"),
@@ -45,40 +49,5 @@ class Migration(migrations.Migration):
             migrate_assignments_to_offerings,
             migrations.RunPython.noop,
         ),
-        migrations.RemoveConstraint(
-            model_name="facultycourseassignment",
-            name="unique_faculty_course_assignment",
-        ),
-        migrations.RemoveField(
-            model_name="facultycourseassignment",
-            name="course",
-        ),
-        migrations.RemoveField(
-            model_name="facultycourseassignment",
-            name="academic_year",
-        ),
-        migrations.RemoveField(
-            model_name="facultycourseassignment",
-            name="semester",
-        ),
-        migrations.RemoveField(
-            model_name="facultycourseassignment",
-            name="section",
-        ),
-        migrations.AlterField(
-            model_name="facultycourseassignment",
-            name="offering",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.PROTECT,
-                related_name="faculty_assignments",
-                to="academics.courseoffering",
-            ),
-        ),
-        migrations.AddConstraint(
-            model_name="facultycourseassignment",
-            constraint=models.UniqueConstraint(
-                fields=("faculty", "offering"),
-                name="unique_faculty_course_offering_assignment",
-            ),
-        ),
     ]
+}
