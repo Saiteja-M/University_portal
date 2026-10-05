@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { logout as revokeSession } from '../../features/auth/auth.service'
 import { RoleRoute } from './RoleRoute'
 import { PortalHomePage } from '../../features/auth/PortalHomePage'
 import { PortalLoginPage } from '../../features/auth/PortalLoginPage'
@@ -55,7 +56,7 @@ function AdminDashboardPage() {
   return <div className="min-h-screen bg-gray-50">
     <header className="border-b bg-white shadow-sm"><div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
       <div><h1 className="text-2xl font-bold text-gray-900">University Portal</h1><p className="text-sm text-gray-500">Administration Dashboard</p></div>
-      <div className="flex items-center gap-4"><div className="text-right"><p className="text-sm font-medium text-gray-900">{user?.username ?? 'Administrator'}</p><p className="text-xs text-gray-500">{user?.email ?? ''}</p></div><button onClick={logout} className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-100">Logout</button></div>
+      <div className="flex items-center gap-4"><div className="text-right"><p className="text-sm font-medium text-gray-900">{user?.username ?? 'Administrator'}</p><p className="text-xs text-gray-500">{user?.email ?? ''}</p></div><button onClick={async () => { try { await revokeSession() } finally { logout(); window.location.assign('/') } }} className="rounded-lg border px-4 py-2 text-sm font-medium hover:bg-gray-100">Logout</button></div>
     </div></header>
     <main className="mx-auto max-w-7xl px-6 py-8"><section className="mb-8"><h2 className="text-3xl font-bold text-gray-900">Administration</h2><p className="mt-2 text-gray-600">Manage university academics, students, faculty, and core operations.</p></section>
       <section className="mb-8 rounded-xl border bg-white p-6 shadow-sm"><div className="flex items-center justify-between"><div><h3 className="text-lg font-semibold">System Status</h3><p className="mt-1 text-sm text-gray-500">Backend API health status</p></div><span className="text-sm font-medium">{healthQuery.isLoading ? 'Checking...' : healthQuery.isSuccess ? 'Online' : 'Offline'}</span></div></section>
