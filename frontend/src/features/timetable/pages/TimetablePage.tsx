@@ -23,7 +23,7 @@ export default function TimetablePage() {
   const [form,setForm]=useState({offering:'',faculty:'',day_of_week:'1',period:'1',start_time:'09:00',end_time:'09:50',room:'',building:''})
   const slots=slotsQuery.data?.results??[]
   const offerings=offeringsQuery.data?.results??[]
-  const faculty=facultyQuery.data?.results??[]
+  const faculty=(facultyQuery.data?.results??[]).filter(f=>f.status==='ACTIVE')
   const grouped=useMemo(()=>new Map(slots.map(s=>[s.day_of_week+'-'+s.period,s])),[slots])
 
   const submit=()=>{
