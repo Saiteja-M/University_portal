@@ -12,6 +12,7 @@ import { getCurrentUser } from './user.service'
 
 type PortalType =
   | 'ADMIN'
+  | 'HOD'
   | 'FACULTY'
   | 'STUDENT'
 
@@ -32,6 +33,14 @@ const PORTAL_CONFIG = {
     button: 'Sign in as Administrator',
     dashboard: '/admin/dashboard',
     allowedRoles: ['ADMIN'],
+  },
+
+  HOD: {
+    title: 'HOD Login',
+    subtitle: 'Academic management portal',
+    button: 'Sign in as HOD',
+    dashboard: '/academics',
+    allowedRoles: ['HOD'],
   },
 
   FACULTY: {
