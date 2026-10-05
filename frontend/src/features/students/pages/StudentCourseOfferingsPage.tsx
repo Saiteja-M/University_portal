@@ -15,7 +15,7 @@ export default function StudentCourseOfferingsPage() {
   const [offering, setOffering] = useState<number | ''>('')
 
   const students = useStudents({ search: search || undefined })
-  const offerings = useCourseOfferings({ is_active: true })
+  const offerings = useCourseOfferings()
   const enrollments = useEnrollments()
   const assigned = useCourseOfferingEnrollments({ search: search || undefined })
 
