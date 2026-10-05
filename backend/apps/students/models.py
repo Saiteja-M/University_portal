@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from apps.academics.models import Program, Semester
@@ -296,7 +297,6 @@ class CourseOfferingEnrollment(TimeStampedModel):
             enrollment = self.student_enrollment
             offering = self.offering
             if enrollment.academic_year_id != offering.academic_year_id:
-                from django.core.exceptions import ValidationError
                 raise ValidationError({
                     "offering": "Course offering academic year must match the student's enrollment."
                 })
