@@ -181,7 +181,7 @@ export default function FacultyDashboardPage() {
           item.course_name,
           item.course_code,
           item.section,
-          item.semester_number,
+          item.semester_number_number,
         ]
           .map((value) => String(value ?? ''))
           .join(' ')
@@ -213,7 +213,7 @@ export default function FacultyDashboardPage() {
       item.faculty_employee_id,
       item.course_name || `Offering #${item.offering}`,
       item.course_code,
-      item.semester,
+      item.semester_number,
       item.section,
       item.assigned_date,
       item.is_active ? 'Active' : 'Inactive',
@@ -576,7 +576,7 @@ export default function FacultyDashboardPage() {
                     </td>
 
                     <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600 sm:px-6">
-                      {item.semester ?? '—'}
+                      {item.semester_number ?? '—'}
                     </td>
 
                     <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-600 sm:px-6">
