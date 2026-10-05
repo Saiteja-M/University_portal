@@ -33,7 +33,8 @@ class IsAuthenticatedStudent(BasePermission):
         if not user or not user.is_authenticated:
             return False
 
-        return hasattr(user, "student")
+        student = getattr(user, "student", None)
+        return student is not None and student.status == student.Status.ACTIVE
 
 class IsFacultyExamViewer(BasePermission):
     message = "Only faculty, HOD and administrators can view faculty examination data."
