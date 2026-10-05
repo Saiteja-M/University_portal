@@ -3,7 +3,7 @@ import type {
   SelectHTMLAttributes,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
@@ -231,11 +231,15 @@ export function StudentCreatePage() {
     },
   })
 
-  const selectedProgram = form.watch('program')
+  const selectedProgram = useWatch({
+    control: form.control,
+    name: 'program',
+  })
 
-  const selectedAcademicYear = form.watch(
-    'enrollment_academic_year',
-  )
+  const selectedAcademicYear = useWatch({
+    control: form.control,
+    name: 'enrollment_academic_year',
+  })
 
   // ============================================================
   // SEMESTERS
