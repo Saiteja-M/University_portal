@@ -28,6 +28,15 @@ export interface PaginatedResponse<T> {
    Faculty List Parameters
 ========================================================= */
 
+export type {
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
+  FacultyCourseAssignmentCreateData,
+  FacultyCourseAssignmentUpdateData,
+} from "../types/faculty";
+
 export interface FacultyListParams {
   search?: string;
   department?: number | string;
