@@ -29,7 +29,7 @@ import { StudentCreatePage } from '../../features/students/StudentCreatePage'
 import { StudentEditPage } from '../../features/students/StudentEditPage'
 import StudentProfilePage from '../../features/students/StudentProfilePage'
 import StudentAdminProfilePage from '../../features/students/StudentAdminProfilePage'
-import StudentCoursessPage from '../../features/students/StudentCoursessPage'
+import StudentCoursesPage from '../../features/students/StudentCoursesPage'
 import StudentResultsPage from '../../features/students/StudentResultsPage'
 import StudentCourseOfferingsPage from '../../features/students/pages/StudentCourseOfferingsPage'
 import { StudentDashboardPage } from '../../features/students/StudentDashboardPage'
@@ -120,7 +120,7 @@ export const router = createBrowserRouter([
     { path: 'student/register/otp', element: <StudentOtpPage /> },
     { path: 'student/dashboard', element: <StudentRoute><AppShell><StudentDashboardPage /></AppShell></StudentRoute> },
     { path: 'student/profile', element: <StudentRoute><AppShell><StudentProfilePage /></AppShell></StudentRoute> },
-    { path: 'student/courses', element: <StudentRoute><AppShell><StudentCoursessPage /></AppShell></StudentRoute> },
+    { path: 'student/courses', element: <StudentRoute><AppShell><StudentCoursesPage /></AppShell></StudentRoute> },
     { path: 'student/attendance', element: <StudentRoute><AppShell><StudentAttendancePage /></AppShell></StudentRoute> },
     { path: 'student/timetable', element: <StudentRoute><AppShell><MyTimetablePage role="STUDENT" /></AppShell></StudentRoute> },
     { path: 'student/assignments', element: <StudentRoute><AppShell><AssignmentsPage /></AppShell></StudentRoute> },
