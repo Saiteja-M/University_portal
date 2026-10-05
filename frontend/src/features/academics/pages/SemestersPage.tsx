@@ -1,3 +1,7 @@
+const EMPTY_SEMESTERS: never[] = []
+const EMPTY_PROGRAMS: never[] = []
+const EMPTY_ACADEMIC_YEARS: never[] = []
+
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -74,9 +78,9 @@ export default function SemestersPage() {
 
   const [formError, setFormError] = useState('')
 
-  const semesters = semestersData?.results ?? []
-  const programs = programsData?.results ?? []
-  const academicYears = academicYearsData?.results ?? []
+  const semesters = semestersData?.results ?? EMPTY_SEMESTERS
+  const programs = programsData?.results ?? EMPTY_PROGRAMS
+  const academicYears = academicYearsData?.results ?? EMPTY_ACADEMIC_YEARS
 
   const filteredSemesters = useMemo(() => {
     const query = search.trim().toLowerCase()
