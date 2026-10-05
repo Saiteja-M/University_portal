@@ -48,10 +48,10 @@ router.register(
     basename="course",
 )
 
-urlpatterns = router.urls
-
 router.register(
     r"course-offerings",
     CourseOfferingViewSet,
     basename="course-offering",
 )
+
+urlpatterns = router.urls
