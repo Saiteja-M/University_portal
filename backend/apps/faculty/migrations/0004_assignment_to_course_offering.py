@@ -45,6 +45,10 @@ class Migration(migrations.Migration):
             migrate_assignments_to_offerings,
             migrations.RunPython.noop,
         ),
+        migrations.RemoveConstraint(
+            model_name="facultycourseassignment",
+            name="unique_faculty_course_assignment",
+        ),
         migrations.RemoveField(
             model_name="facultycourseassignment",
             name="course",
@@ -69,10 +73,6 @@ class Migration(migrations.Migration):
                 related_name="faculty_assignments",
                 to="academics.courseoffering",
             ),
-        ),
-        migrations.RemoveConstraint(
-            model_name="facultycourseassignment",
-            name="unique_faculty_course_assignment",
         ),
         migrations.AddConstraint(
             model_name="facultycourseassignment",
