@@ -40,6 +40,10 @@ class TimetableSlot(models.Model):
                 fields=["room", "day_of_week", "period"],
                 name="unique_room_timetable_period",
             ),
+            models.UniqueConstraint(
+                fields=["faculty", "day_of_week", "period"],
+                name="unique_faculty_timetable_period",
+            ),
         ]
         indexes = [
             models.Index(fields=["faculty", "day_of_week", "period"], name="tt_faculty_day_period_idx"),

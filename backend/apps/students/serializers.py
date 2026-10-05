@@ -867,4 +867,24 @@ class CourseOfferingEnrollmentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"offering": "Course offering must belong to the student's program."})
         if not offering.is_active or offering.status in {"CLOSED", "CANCELLED"}:
             raise serializers.ValidationError({"offering": "Only active open/planned course offerings can accept students."})
+
+        if offering.status not in {"PLANNED", "OPEN"}:
+            raise serializers.ValidationError({"offering": "Students can only be enrolled in planned or open course offerings."})
+
+        status = attrs.get("status", getattr(self.instance, "status", CourseOfferingEnrollment.Status.ENROLLED))
+        if status == CourseOfferingEnrollment.Status.ENROLLED:
+            enrolled_count = (
+                CourseOfferingEnrollment.objects
+                .filter(
+                    offering=offering,
+                    status=CourseOfferingEnrollment.Status.ENROLLED,
+                )
+                .exclude(pk=self.instance.pk if self.instance else None)
+                .count()
+            )
+            if enrolled_count >= offering.capacity:
+                raise serializers.ValidationError(
+                    {"offering": "Course offering capacity has been reached."}
+                )
+
         return attrs

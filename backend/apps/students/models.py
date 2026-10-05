@@ -297,6 +297,16 @@ class CourseOfferingEnrollment(TimeStampedModel):
             enrollment = self.student_enrollment
             offering = self.offering
 
+            if enrollment.status != Enrollment.Status.ACTIVE:
+                raise ValidationError({
+                    "student_enrollment": "Only an active semester enrollment can receive a course offering."
+                })
+
+            if enrollment.student.status != Student.Status.ACTIVE:
+                raise ValidationError({
+                    "student_enrollment": "Only active students can be enrolled in a course offering."
+                })
+
             if not offering.is_active:
                 raise ValidationError({
                     "offering": "Course offering must be active."
@@ -306,6 +316,12 @@ class CourseOfferingEnrollment(TimeStampedModel):
                 raise ValidationError({
                     "offering": "Students cannot be enrolled in a closed or cancelled course offering."
                 })
+
+            if offering.status not in {"PLANNED", "OPEN"}:
+                raise ValidationError({
+                    "offering": "Students can only be enrolled in planned or open course offerings."
+                })
+
             if enrollment.academic_year_id != offering.academic_year_id:
                 raise ValidationError({
                     "offering": "Course offering academic year must match the student's enrollment."
@@ -316,10 +332,24 @@ class CourseOfferingEnrollment(TimeStampedModel):
                     "offering": "Course offering semester must match the student's enrollment."
                 })
             if enrollment.student.program_id != offering.semester.program_id:
-                from django.core.exceptions import ValidationError
                 raise ValidationError({
                     "offering": "Course offering must belong to the student's program."
                 })
+
+            if self.status == self.Status.ENROLLED:
+                enrolled_count = (
+                    CourseOfferingEnrollment.objects
+                    .filter(
+                        offering=offering,
+                        status=self.Status.ENROLLED,
+                    )
+                    .exclude(pk=self.pk)
+                    .count()
+                )
+                if enrolled_count >= offering.capacity:
+                    raise ValidationError({
+                        "offering": "Course offering capacity has been reached."
+                    })
 
     def __str__(self):
         return f"{self.student_enrollment.student.student_id} - {self.offering.course.code} - {self.offering.section}"
