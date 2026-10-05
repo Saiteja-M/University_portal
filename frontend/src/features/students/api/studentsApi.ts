@@ -48,58 +48,6 @@ export type {
  */
 export interface StudentCourse {
   id: number
-  semester: number
-  semester_number: number
-  program_name: string
-  regulation: number
-  regulation_code: string
-  code: string
-  name: string
-  credits: number
-  is_active: boolean
-  created_at: string
-  updated_at: string
-
-  // ==========================================================================
-  // COURSE OFFERING ENROLLMENTS
-  // ===========================================================================
-
-}
-
-export interface StudentCoursesResponse {
-  student_id: string
-  academic_year: number | null
-  academic_year_name: string | null
-  semester: number | null
-  semester_number: number | null
-  program_name: string | null
-  courses: StudentCourse[]
-}
-export interface StudentCourse {
-  id: number
-  semester: number
-  semester_number: number
-  program_name: string
-  regulation: number
-  regulation_code: string
-  code: string
-  name: string
-  credits: number
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
-export interface StudentCoursesResponse {
-  student_id: string
-  academic_year: number | null
-  academic_year_name: string | null
-  semester: number | null
-  semester_number: number | null
-  program_name: string | null
-  courses: StudentCourse[]
-}
-export interface StudentCourse {
-  id: number
   code: string
   name: string
   credits: number
