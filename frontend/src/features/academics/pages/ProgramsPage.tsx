@@ -1,3 +1,5 @@
+const EMPTY_PROGRAMS: never[] = []
+
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -55,7 +57,7 @@ export default function ProgramsPage() {
   const [form, setForm] = useState<ProgramFormData>(initialForm)
   const [formError, setFormError] = useState('')
 
-  const programs = programsData?.results ?? []
+  const programs = programsData?.results ?? EMPTY_PROGRAMS
   const departments = departmentsData?.results ?? []
 
   const filteredPrograms = useMemo(() => {
