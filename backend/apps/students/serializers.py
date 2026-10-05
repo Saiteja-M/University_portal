@@ -8,6 +8,17 @@ from .models import CourseOfferingEnrollment, Enrollment, Guardian, Student, Stu
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        request = self.context.get("request")
+        student = getattr(request.user, "student", None) if request else None
+        if student is not None:
+            supplied_student = attrs.get("student")
+            if supplied_student is not None and supplied_student.pk != student.pk:
+                raise serializers.ValidationError({"student": "You can only manage your own student profile."})
+            attrs["student"] = student
+        return attrs
+
+
     class Meta:
         model = StudentProfile
         fields = [
