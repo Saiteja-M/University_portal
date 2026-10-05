@@ -37,8 +37,9 @@ const studentItems: NavItem[] = [
   { label: 'My Courses', path: '/student/courses', icon: '▣' },
   { label: 'Attendance', path: '/student/attendance', icon: '✓' },
   { label: 'Assignments', path: '/student/assignments', icon: '✓' },
-  { label: 'Timetable', path: '/academics/timetable', icon: '▦' },
-  { label: 'Examinations', path: '/student/results', icon: '📝' },
+  { label: 'Timetable', path: '/student/timetable', icon: '▦' },
+  { label: 'Examinations', path: '/student/examinations', icon: '📝' },
+  { label: 'Results', path: '/student/results', icon: '▥' },
 ]
 
 const hodItems: NavItem[] = [
