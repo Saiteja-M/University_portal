@@ -813,3 +813,48 @@ class StudentCourseSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = fields    
+
+class CourseOfferingEnrollmentSerializer(serializers.ModelSerializer):
+    student_id = serializers.CharField(source="student_enrollment.student.student_id", read_only=True)
+    student_name = serializers.SerializerMethodField()
+    course_code = serializers.CharField(source="offering.course.code", read_only=True)
+    course_name = serializers.CharField(source="offering.course.name", read_only=True)
+    academic_year_name = serializers.CharField(source="offering.academic_year.name", read_only=True)
+    semester_number = serializers.IntegerField(source="offering.semester.number", read_only=True)
+    program_name = serializers.CharField(source="offering.semester.program.name", read_only=True)
+    section = serializers.CharField(source="offering.section", read_only=True)
+
+    class Meta:
+        model = __import__("apps.students.models", fromlist=["CourseOfferingEnrollment"]).CourseOfferingEnrollment
+        fields = [
+            "id", "student_enrollment", "student_id", "student_name", "offering",
+            "course_code", "course_name", "academic_year_name", "semester_number",
+            "program_name", "section", "status", "enrolled_date", "created_at", "updated_at",
+        ]
+        read_only_fields = [
+            "id", "student_id", "student_name", "course_code", "course_name",
+            "academic_year_name", "semester_number", "program_name", "section",
+            "created_at", "updated_at",
+        ]
+
+    def get_student_name(self, obj):
+        user = obj.student_enrollment.student.user
+        return user.get_full_name().strip() if user else obj.student_enrollment.student.student_id
+
+    def validate(self, attrs):
+        from .models import CourseOfferingEnrollment
+        enrollment = attrs.get("student_enrollment", getattr(self.instance, "student_enrollment", None))
+        offering = attrs.get("offering", getattr(self.instance, "offering", None))
+        if not enrollment or not offering:
+            raise serializers.ValidationError("Student enrollment and course offering are required.")
+        if enrollment.status != Enrollment.Status.ACTIVE:
+            raise serializers.ValidationError({"student_enrollment": "Only an active semester enrollment can receive course offerings."})
+        if enrollment.academic_year_id != offering.academic_year_id:
+            raise serializers.ValidationError({"offering": "Course offering academic year must match the student's enrollment."})
+        if enrollment.semester_id != offering.semester_id:
+            raise serializers.ValidationError({"offering": "Course offering semester must match the student's enrollment."})
+        if enrollment.student.program_id != offering.semester.program_id:
+            raise serializers.ValidationError({"offering": "Course offering must belong to the student's program."})
+        if not offering.is_active or offering.status in {"CLOSED", "CANCELLED"}:
+            raise serializers.ValidationError({"offering": "Only active open/planned course offerings can accept students."})
+        return attrs
