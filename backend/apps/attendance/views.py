@@ -54,6 +54,10 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
                 "academic_year",
                 "semester",
                 "semester__program",
+                "offering",
+                "offering__course",
+                "offering__academic_year",
+                "offering__semester",
             )
             .prefetch_related("records")
             .all()
