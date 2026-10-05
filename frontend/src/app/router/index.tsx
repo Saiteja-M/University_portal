@@ -534,6 +534,17 @@ export const router = createBrowserRouter([
         ),
       },
 
+      {
+        path: 'academics/timetable',
+        element: (
+          <RoleRoute allowedRoles={['ADMIN', 'HOD']}>
+            <AppShell>
+              <TimetablePage />
+            </AppShell>
+          </RoleRoute>
+        ),
+      },
+
       // =====================================================
       // STUDENT MANAGEMENT
       // =====================================================
