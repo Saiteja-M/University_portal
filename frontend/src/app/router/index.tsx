@@ -70,7 +70,7 @@ function AcademicRoute({ children }: { children: React.ReactNode }) {
   return <RoleRoute allowedRoles={['ADMIN','HOD']}>{children}</RoleRoute>
 }
 function FacultyRoute({ children }: { children: React.ReactNode }) {
-  return <RoleRoute allowedRoles={['FACULTY','HOD','ADMIN']}>{children}</RoleRoute>
+  return <RoleRoute allowedRoles={['FACULTY']}>{children}</RoleRoute>
 }
 function StudentRoute({ children }: { children: React.ReactNode }) {
   return <RoleRoute allowedRoles={['STUDENT']} fallbackPath="/">{children}</RoleRoute>
