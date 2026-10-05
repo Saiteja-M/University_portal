@@ -82,6 +82,7 @@ export const router = createBrowserRouter([
     { index: true, element: <PortalHomePage /> },
     { path: 'admin/login', element: <PortalLoginPage portal="ADMIN" /> },
     { path: 'faculty/login', element: <PortalLoginPage portal="FACULTY" /> },
+    { path: 'hod/login', element: <PortalLoginPage portal="HOD" /> },
     { path: 'student/login', element: <PortalLoginPage portal="STUDENT" /> },
     { path: 'admin/dashboard', element: <AdminRoute><AdminDashboardPage /></AdminRoute> },
 
