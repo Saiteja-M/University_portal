@@ -125,11 +125,13 @@ export interface FacultyCourseAssignment {
   id: number
   faculty: number
   faculty_name: string
-  course: number
+  faculty_employee_id: string
+  offering: number
   course_code: string
   course_name: string
-  academic_year: number
-  semester: number
+  academic_year_name: string
+  semester_number: number
+  program_name: string
   section: string
   assigned_date: string
   is_active: boolean
@@ -139,10 +141,7 @@ export interface FacultyCourseAssignment {
 
 export interface FacultyCourseAssignmentCreateData {
   faculty: number
-  course: number
-  academic_year: number
-  semester: number
-  section?: string
+  offering: number
   assigned_date?: string
   is_active?: boolean
 }
