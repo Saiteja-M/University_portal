@@ -1,9 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from apps.academics.models import AcademicYear, Course, Semester
+from apps.academics.models import AcademicYear, Course, Semester, CourseOffering
 from apps.faculty.models import Faculty
-from apps.students.models import Student
+from apps.students.models import Student, CourseOfferingEnrollment
 
 
 class AttendanceSession(models.Model):
@@ -23,6 +23,14 @@ class AttendanceSession(models.Model):
         Faculty,
         on_delete=models.PROTECT,
         related_name="attendance_sessions",
+    )
+
+    offering = models.ForeignKey(
+        CourseOffering,
+        on_delete=models.PROTECT,
+        related_name="attendance_sessions",
+        null=True,
+        blank=True,
     )
 
     course = models.ForeignKey(
@@ -132,6 +140,27 @@ class AttendanceSession(models.Model):
                 )
 
         # --------------------------------------------------
+        # Course offering integrity
+        # --------------------------------------------------
+
+        if self.offering_id:
+            if not self.offering.is_active:
+                errors["offering"] = "The selected course offering is inactive."
+            if self.offering.status in {"CLOSED", "CANCELLED"}:
+                errors["offering"] = "Attendance cannot be created for a closed or cancelled course offering."
+            if self.offering.course_id != self.course_id:
+                errors["offering"] = "The course offering does not match the selected course."
+            if self.offering.academic_year_id != self.academic_year_id:
+                errors["offering"] = "The course offering does not match the selected academic year."
+            if self.offering.semester_id != self.semester_id:
+                errors["offering"] = "The course offering does not match the selected semester."
+            if not self.offering.faculty_assignments.filter(
+                faculty_id=self.faculty_id,
+                is_active=True,
+            ).exists():
+                errors["faculty"] = "The faculty member is not assigned to this course offering."
+
+        # --------------------------------------------------
         # Faculty → Course assignment integrity
         # --------------------------------------------------
 
@@ -237,11 +266,19 @@ class AttendanceRecord(models.Model):
         # Student must belong to the session semester
         # --------------------------------------------------
 
-        enrolled = self.student.enrollments.filter(
-            semester_id=self.session.semester_id,
-            academic_year_id=self.session.academic_year_id,
-            status="ACTIVE",
-        ).exists()
+        if self.session.offering_id:
+            enrolled = CourseOfferingEnrollment.objects.filter(
+                student_enrollment__student_id=self.student_id,
+                offering_id=self.session.offering_id,
+                status=CourseOfferingEnrollment.Status.ENROLLED,
+                student_enrollment__status="ACTIVE",
+            ).exists()
+        else:
+            enrolled = self.student.enrollments.filter(
+                semester_id=self.session.semester_id,
+                academic_year_id=self.session.academic_year_id,
+                status="ACTIVE",
+            ).exists()
 
         if not enrolled:
             raise ValidationError(
