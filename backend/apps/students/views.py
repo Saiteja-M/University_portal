@@ -381,6 +381,9 @@ class StudentViewSet(
             .filter(
                 student=student,
                 status=Enrollment.Status.ACTIVE,
+                academic_year__is_current=True,
+                semester__is_active=True,
+                semester__program__is_active=True,
             )
             .select_related(
                 "academic_year",
