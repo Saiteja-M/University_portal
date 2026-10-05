@@ -1,3 +1,5 @@
+const EMPTY_ACADEMIC_YEARS: never[] = []
+
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
@@ -49,7 +51,7 @@ export default function AcademicYearsPage() {
 
   const [formError, setFormError] = useState('')
 
-  const academicYears = academicYearsData?.results ?? []
+  const academicYears = academicYearsData?.results ?? EMPTY_ACADEMIC_YEARS
 
   const filteredAcademicYears = useMemo(() => {
     const query = search.trim().toLowerCase()
