@@ -41,7 +41,8 @@ import AssignmentsPage from '../../features/assignments/pages/AssignmentsPage'
 import { ExaminationResultsAdminPage } from '../../features/examinations/pages/ExaminationResultsAdminPage'
 import { ExaminationsAdminPage } from '../../features/examinations/pages/ExaminationsAdminPage'
 import StudentExaminationsPage from '../../features/examinations/pages/StudentExaminationsPage'
-import StudentAttendancePage from '../../features/attendance/pages/FacultyAttendancePage'
+import StudentAttendancePage from '../../features/attendance/pages/StudentAttendancePage'
+import AdminAttendancePage from '../../features/attendance/pages/AdminAttendancePage'
 
 function AppLayout() {
   return <div className="min-h-screen bg-gray-50"><Outlet /></div>
@@ -95,6 +96,7 @@ export const router = createBrowserRouter([
     { path: 'academics/course-offerings', element: <AcademicRoute><AppShell><CourseOfferingsPage /></AppShell></AcademicRoute> },
     { path: 'academics/timetable', element: <AcademicRoute><AppShell><TimetablePage /></AppShell></AcademicRoute> },
     { path: 'academics/assignments', element: <AcademicRoute><AppShell><AssignmentsPage /></AppShell></AcademicRoute> },
+    { path: 'attendance', element: <AdminRoute><AppShell><AdminAttendancePage /></AppShell></AdminRoute> },
 
     { path: 'students', element: <AdminRoute><AppShell><StudentsPage /></AppShell></AdminRoute> },
     { path: 'students/new', element: <AdminRoute><AppShell><StudentCreatePage /></AppShell></AdminRoute> },
