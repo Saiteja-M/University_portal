@@ -110,17 +110,25 @@ class RegulationSerializer(serializers.ModelSerializer):
         return value.strip()
 
     def validate(self, attrs):
-        start_year = attrs.get("start_year")
-        end_year = attrs.get("end_year")
+        start_year = attrs.get(
+            "start_year",
+            getattr(self.instance, "start_year", None),
+        )
+        end_year = attrs.get(
+            "end_year",
+            getattr(self.instance, "end_year", None),
+        )
 
         if (
             end_year is not None
             and start_year is not None
             and end_year < start_year
         ):
-            raise serializers.ValidationError(
-                "End year must be greater than or equal to start year."
-            )
+            raise serializers.ValidationError({
+                "end_year": (
+                    "End year must be greater than or equal to start year."
+                )
+            })
 
         return attrs
 class AcademicYearSerializer(serializers.ModelSerializer):
@@ -142,10 +150,32 @@ class AcademicYearSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        if attrs["start_date"] >= attrs["end_date"]:
-            raise serializers.ValidationError(
-                "Start date must be before end date."
-            )
+        start_date = attrs.get(
+            "start_date",
+            getattr(self.instance, "start_date", None),
+        )
+        end_date = attrs.get(
+            "end_date",
+            getattr(self.instance, "end_date", None),
+        )
+
+        if start_date is not None and end_date is not None:
+            if start_date >= end_date:
+                raise serializers.ValidationError({
+                    "end_date": "End date must be after start date."
+                })
+
+        if attrs.get("is_current") is True:
+            queryset = AcademicYear.objects.filter(is_current=True)
+            if self.instance is not None:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise serializers.ValidationError({
+                    "is_current": (
+                        "Another academic year is already marked current."
+                    )
+                })
+
         return attrs
 
 
@@ -187,6 +217,55 @@ class SemesterSerializer(serializers.ModelSerializer):
                 "Semester number must be between 1 and 12."
             )
         return value
+
+    def validate(self, attrs):
+        program = attrs.get("program", getattr(self.instance, "program", None))
+        academic_year = attrs.get(
+            "academic_year",
+            getattr(self.instance, "academic_year", None),
+        )
+        number = attrs.get("number", getattr(self.instance, "number", None))
+        semester_type = attrs.get(
+            "semester_type",
+            getattr(self.instance, "semester_type", None),
+        )
+
+        if program and not program.is_active:
+            raise serializers.ValidationError({
+                "program": "Semester must belong to an active program."
+            })
+
+        if program and academic_year and number:
+            duplicate = Semester.objects.filter(
+                program=program,
+                academic_year=academic_year,
+                number=number,
+            )
+            if self.instance is not None:
+                duplicate = duplicate.exclude(pk=self.instance.pk)
+            if duplicate.exists():
+                raise serializers.ValidationError({
+                    "number": (
+                        "This semester already exists for the selected "
+                        "program and academic year."
+                    )
+                })
+
+        if number and semester_type:
+            expected = (
+                Semester.SemesterType.ODD
+                if number % 2
+                else Semester.SemesterType.EVEN
+            )
+            if semester_type != expected:
+                raise serializers.ValidationError({
+                    "semester_type": (
+                        f"Semester {number} must be "
+                        f"{expected.label}."
+                    )
+                })
+
+        return attrs
 
 class CourseSerializer(serializers.ModelSerializer):
     semester_number = serializers.IntegerField(
@@ -269,8 +348,11 @@ class CourseSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        semester = attrs.get("semester")
-        regulation = attrs.get("regulation")
+        semester = attrs.get("semester", getattr(self.instance, "semester", None))
+        regulation = attrs.get(
+            "regulation",
+            getattr(self.instance, "regulation", None),
+        )
 
         if semester and regulation:
             if semester.program_id != regulation.program_id:
@@ -280,6 +362,16 @@ class CourseSerializer(serializers.ModelSerializer):
                         "to the selected semester's program."
                     )
                 })
+
+        if semester and not semester.is_active:
+            raise serializers.ValidationError({
+                "semester": "Course must belong to an active semester."
+            })
+
+        if regulation and not regulation.is_active:
+            raise serializers.ValidationError({
+                "regulation": "Course must use an active regulation."
+            })
 
         return attrs
 
@@ -343,18 +435,39 @@ class CourseOfferingSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        course = attrs.get("course")
-        semester = attrs.get("semester")
-        academic_year = attrs.get("academic_year")
+        course = attrs.get("course", getattr(self.instance, "course", None))
+        semester = attrs.get(
+            "semester",
+            getattr(self.instance, "semester", None),
+        )
+        academic_year = attrs.get(
+            "academic_year",
+            getattr(self.instance, "academic_year", None),
+        )
 
         if course and semester and course.semester_id != semester.id:
             raise serializers.ValidationError({
-                "semester": "The selected semester must match the course semester."
+                "semester": (
+                    "The selected semester must match the course semester."
+                )
             })
 
-        if semester and academic_year and semester.academic_year_id != academic_year.id:
+        if semester and academic_year:
+            if semester.academic_year_id != academic_year.id:
+                raise serializers.ValidationError({
+                    "academic_year": (
+                        "The selected academic year must match the semester."
+                    )
+                })
+
+        if course and not course.is_active:
             raise serializers.ValidationError({
-                "academic_year": "The selected academic year must match the semester."
+                "course": "Course offering must use an active course."
+            })
+
+        if semester and not semester.is_active:
+            raise serializers.ValidationError({
+                "semester": "Course offering must use an active semester."
             })
 
         return attrs
