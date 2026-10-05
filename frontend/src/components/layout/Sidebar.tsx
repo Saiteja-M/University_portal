@@ -31,6 +31,16 @@ const adminItems: NavItem[] = [
   { label: 'Examinations', path: '/examinations', icon: '📝' },
 ]
 
+const studentItems: NavItem[] = [
+  { label: 'Dashboard', path: '/student/dashboard', icon: '⌂' },
+  { label: 'My Profile', path: '/student/profile', icon: '◉' },
+  { label: 'My Courses', path: '/student/courses', icon: '▣' },
+  { label: 'Attendance', path: '/student/attendance', icon: '✓' },
+  { label: 'Assignments', path: '/student/assignments', icon: '✓' },
+  { label: 'Timetable', path: '/academics/timetable', icon: '▦' },
+  { label: 'Examinations', path: '/student/results', icon: '📝' },
+]
+
 const hodItems: NavItem[] = [
   { label: 'Dashboard', path: '/faculty/dashboard', icon: '⌂' },
   { label: 'Academics', path: '/academics', icon: '▣' },
@@ -50,6 +60,7 @@ export function Sidebar() {
   const isAdmin = roles.includes('ADMIN')
   const isHod = roles.includes('HOD')
   const isFaculty = roles.includes('FACULTY')
+  const isStudent = roles.includes('STUDENT')
 
   const items = isAdmin
     ? adminItems
@@ -57,7 +68,9 @@ export function Sidebar() {
       ? hodItems
       : isFaculty
         ? facultyItems
-        : []
+        : isStudent
+          ? studentItems
+          : []
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-slate-200 bg-slate-950 text-white lg:flex">
