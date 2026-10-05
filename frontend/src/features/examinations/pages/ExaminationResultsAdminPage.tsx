@@ -74,7 +74,6 @@ export function ExaminationResultsAdminPage() {
     return offerings.filter(
       (item) =>
         item.semester === selected.semester &&
-        item.academic_year === item.academic_year &&
         item.is_active &&
         item.status !== 'CLOSED' &&
         item.status !== 'CANCELLED',
