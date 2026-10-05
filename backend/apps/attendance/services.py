@@ -33,16 +33,12 @@ def mark_attendance(
             "Attendance data cannot be empty."
         )
 
+    # Lock only the AttendanceSession row. The nullable offering relation
+    # must not participate in the locking query because PostgreSQL rejects
+    # FOR UPDATE queries that attempt to lock the nullable side of an OUTER JOIN.
     session = (
         AttendanceSession.objects
         .select_for_update()
-        .select_related(
-            "faculty",
-            "course",
-            "academic_year",
-            "semester",
-            "offering",
-        )
         .get(pk=session.pk)
     )
 
