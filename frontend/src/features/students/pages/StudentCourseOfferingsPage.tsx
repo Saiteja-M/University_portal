@@ -17,7 +17,7 @@ export default function StudentCourseOfferingsPage() {
   const students = useStudents({ search: search || '' })
   const offerings = useCourseOfferings()
   const enrollments = useEnrollments()
-  const assigned = useCourseOfferingEnrollments({ search: search || undefined })
+  const assigned = useCourseOfferingEnrollments({ search })
 
   const create = useCreateCourseOfferingEnrollment()
   const remove = useDeleteCourseOfferingEnrollment()
