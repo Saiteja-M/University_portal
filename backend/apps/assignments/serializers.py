@@ -14,7 +14,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
     academic_year_name = serializers.CharField(source="offering.academic_year.name", read_only=True)
     semester_number = serializers.IntegerField(source="offering.semester.number", read_only=True)
     program_name = serializers.CharField(source="offering.semester.program.name", read_only=True)
-    submission_count = serializers.IntegerField(source="submissions.count", read_only=True)
+    submission_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Assignment
@@ -24,6 +24,9 @@ class AssignmentSerializer(serializers.ModelSerializer):
             "attachment", "status", "is_active", "submission_count", "created_at", "updated_at",
         ]
         read_only_fields = ["id", "course_code", "course_name", "section", "academic_year_name", "semester_number", "program_name", "submission_count", "created_at", "updated_at"]
+
+    def get_submission_count(self, obj):
+        return obj.submissions.count()
 
     def validate(self, attrs):
         offering = attrs.get("offering") or getattr(self.instance, "offering", None)
@@ -71,6 +74,9 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
         ).exists()
         if not enrolled:
             raise serializers.ValidationError({"assignment": "You are not enrolled in this course offering."})
+        marks = attrs.get("marks")
+        if marks is not None and marks > assignment.max_marks:
+            raise serializers.ValidationError({"marks": "Marks cannot exceed the assignment maximum marks."})
         if assignment.due_date < timezone.now():
             attrs["status"] = AssignmentSubmission.Status.LATE
         return attrs
