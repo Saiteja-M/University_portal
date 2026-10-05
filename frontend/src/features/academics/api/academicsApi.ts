@@ -18,7 +18,7 @@ export interface PaginatedResponse<T> {
 
 export type AcademicListParams = Record<
   string,
-  string | number | boolean
+  string | number | boolean | undefined
 >
 
 export interface DepartmentCreateData {
