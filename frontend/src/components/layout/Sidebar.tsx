@@ -22,6 +22,7 @@ const adminItems: NavItem[] = [
   { label: 'Students', path: '/students', icon: '♙' },
   { label: 'Faculty', path: '/faculty', icon: '◉' },
   { label: 'Examinations', path: '/examinations', icon: '📝' },
+  { label: 'Results', path: '/examinations/results', icon: '▥' },
 ]
 
 const studentItems: NavItem[] = [
