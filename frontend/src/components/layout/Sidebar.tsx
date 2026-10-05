@@ -23,6 +23,7 @@ const adminItems: NavItem[] = [
   { label: 'Dashboard', path: '/admin/dashboard', icon: '⌂' },
   { label: 'Academics', path: '/academics', icon: '▣' },
   { label: 'Courses', path: '/academics/courses', icon: '▤' },
+  { label: 'Timetable', path: '/academics/timetable', icon: '▦' },
   { label: 'Students', path: '/students', icon: '♙' },
   { label: 'Faculty', path: '/faculty', icon: '◉' },
   { label: 'Examinations', path: '/examinations', icon: '📝' },
