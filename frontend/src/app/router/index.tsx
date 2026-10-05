@@ -66,6 +66,7 @@ import { StudentEditPage } from '../../features/students/StudentEditPage'
 import StudentProfilePage from '../../features/students/StudentProfilePage'
 import FacultyPage from '../../features/faculty/pages/FacultyPage'
 import FacultyModulePage from '../../features/faculty/pages/FacultyModulePage'
+import FacultyExaminationsPage from '../../features/faculty/pages/FacultyExaminationsPage'
 
 import StudentAdminProfilePage from '../../features/students/StudentAdminProfilePage'
 
@@ -796,7 +797,7 @@ export const router = createBrowserRouter([
   element: (
     <FacultyRoute>
       <AppShell>
-        <FacultyModulePage />
+        <FacultyExaminationsPage />
       </AppShell>
     </FacultyRoute>
   ),
@@ -807,7 +808,7 @@ export const router = createBrowserRouter([
   element: (
     <FacultyRoute>
       <AppShell>
-        <FacultyModulePage />
+        <FacultyExaminationsPage />
       </AppShell>
     </FacultyRoute>
   ),
