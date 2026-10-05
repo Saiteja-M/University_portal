@@ -9,6 +9,8 @@ import {
 
 import type { Department } from '../types'
 
+const EMPTY_DEPARTMENTS: never[] = []
+
 type DepartmentForm = {
   code: string
   name: string
@@ -42,7 +44,7 @@ export default function DepartmentsPage() {
   const updateDepartment = useUpdateDepartment()
   const deleteDepartment = useDeleteDepartment()
 
-  const departments = departmentsQuery.data?.results ?? []
+  const departments = departmentsQuery.data?.results ?? EMPTY_DEPARTMENTS
 
   const filteredDepartments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase()
