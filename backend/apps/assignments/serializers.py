@@ -90,11 +90,31 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
             return attrs
         if not assignment.is_active or assignment.status != Assignment.Status.PUBLISHED:
             raise serializers.ValidationError({"assignment": "Only published active assignments accept submissions."})
+
+        if self.instance is not None and "assignment" in attrs:
+            requested_assignment = attrs["assignment"]
+            if requested_assignment.pk != self.instance.assignment_id and not (
+                request.user.is_superuser
+                or request.user.groups.filter(name__in={"ADMIN", "HOD"}).exists()
+            ):
+                raise serializers.ValidationError({
+                    "assignment": "The assignment cannot be changed after submission."
+                })
+
         student = getattr(request.user, "student", None)
         is_student = request.user.groups.filter(name="STUDENT").exists()
         is_manager = request.user.is_superuser or request.user.groups.filter(name__in={"ADMIN", "HOD", "FACULTY"}).exists()
         if not student or not is_student:
             if is_manager:
+                if request.user.groups.filter(name="FACULTY").exists() and not request.user.groups.filter(name__in={"ADMIN", "HOD"}).exists():
+                    if not FacultyCourseAssignment.objects.filter(
+                        faculty=getattr(request.user, "faculty", None),
+                        offering=assignment.offering,
+                        is_active=True,
+                    ).exists():
+                        raise serializers.ValidationError({
+                            "assignment": "You are not assigned to this course offering."
+                        })
                 return attrs
             raise serializers.ValidationError({"assignment": "Only students can submit assignments."})
         enrolled = CourseOfferingEnrollment.objects.filter(
