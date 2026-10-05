@@ -115,6 +115,10 @@ class CourseAdmin(admin.ModelAdmin):
         "regulation",
         "semester",
         "credits",
+        "lecture_hours",
+        "tutorial_hours",
+        "practical_hours",
+        "course_category",
         "is_active",
     )
     search_fields = (
@@ -128,6 +132,7 @@ class CourseAdmin(admin.ModelAdmin):
         "semester",
         "is_active",
         "credits",
+        "course_category",
     )
 
 @admin.register(CourseOffering)
