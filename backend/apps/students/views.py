@@ -17,6 +17,7 @@ from apps.students.services.student_pdf import (
 )
 
 from .models import (
+    CourseOfferingEnrollment,
     Enrollment,
     Guardian,
     Student,
@@ -30,6 +31,7 @@ from .permissions import (
 )
 
 from .serializers import (
+    CourseOfferingEnrollmentSerializer,
     EnrollmentSerializer,
     GuardianSerializer,
     StudentCourseSerializer,
@@ -766,3 +768,49 @@ class EnrollmentViewSet(
         )
 
         serializer.instance = enrollment
+
+class CourseOfferingEnrollmentViewSet(
+    StudentsViewSetMixin,
+    viewsets.ModelViewSet,
+):
+    queryset = (
+        CourseOfferingEnrollment.objects
+        .select_related(
+            "student_enrollment",
+            "student_enrollment__student",
+            "student_enrollment__student__user",
+            "student_enrollment__student__program",
+            "offering",
+            "offering__course",
+            "offering__academic_year",
+            "offering__semester",
+            "offering__semester__program",
+        )
+        .all()
+    )
+    serializer_class = CourseOfferingEnrollmentSerializer
+    search_fields = [
+        "student_enrollment__student__student_id",
+        "student_enrollment__student__user__first_name",
+        "student_enrollment__student__user__last_name",
+        "offering__course__code",
+        "offering__course__name",
+        "offering__section",
+    ]
+    ordering_fields = ["enrolled_date", "created_at"]
+    ordering = ["student_enrollment__student__student_id"]
+    filterset_fields = [
+        "student_enrollment",
+        "student_enrollment__student",
+        "offering",
+        "offering__course",
+        "offering__academic_year",
+        "offering__semester",
+        "status",
+    ]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def perform_update(self, serializer):
+        serializer.save()
