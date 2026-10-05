@@ -218,6 +218,55 @@ class SemesterSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate(self, attrs):
+        program = attrs.get("program", getattr(self.instance, "program", None))
+        academic_year = attrs.get(
+            "academic_year",
+            getattr(self.instance, "academic_year", None),
+        )
+        number = attrs.get("number", getattr(self.instance, "number", None))
+        semester_type = attrs.get(
+            "semester_type",
+            getattr(self.instance, "semester_type", None),
+        )
+
+        if program and not program.is_active:
+            raise serializers.ValidationError({
+                "program": "Semester must belong to an active program."
+            })
+
+        if program and academic_year and number:
+            duplicate = Semester.objects.filter(
+                program=program,
+                academic_year=academic_year,
+                number=number,
+            )
+            if self.instance is not None:
+                duplicate = duplicate.exclude(pk=self.instance.pk)
+            if duplicate.exists():
+                raise serializers.ValidationError({
+                    "number": (
+                        "This semester already exists for the selected "
+                        "program and academic year."
+                    )
+                })
+
+        if number and semester_type:
+            expected = (
+                Semester.SemesterType.ODD
+                if number % 2
+                else Semester.SemesterType.EVEN
+            )
+            if semester_type != expected:
+                raise serializers.ValidationError({
+                    "semester_type": (
+                        f"Semester {number} must be "
+                        f"{expected.label}."
+                    )
+                })
+
+        return attrs
+
 class CourseSerializer(serializers.ModelSerializer):
     semester_number = serializers.IntegerField(
         source="semester.number",
