@@ -7,6 +7,7 @@ from .models import (
     Program,
     Regulation,
     Semester,
+    CourseOffering,
 )
 
 
@@ -127,4 +128,28 @@ class CourseAdmin(admin.ModelAdmin):
         "semester",
         "is_active",
         "credits",
+    )
+
+@admin.register(CourseOffering)
+class CourseOfferingAdmin(admin.ModelAdmin):
+    list_display = (
+        "course",
+        "academic_year",
+        "semester",
+        "section",
+        "capacity",
+        "status",
+        "is_active",
+    )
+    search_fields = (
+        "course__code",
+        "course__name",
+        "section",
+        "academic_year__name",
+    )
+    list_filter = (
+        "status",
+        "is_active",
+        "academic_year",
+        "semester",
     )
