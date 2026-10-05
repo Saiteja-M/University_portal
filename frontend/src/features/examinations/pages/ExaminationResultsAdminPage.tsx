@@ -1,3 +1,8 @@
+const EMPTY_EXAMS: never[] = []
+const EMPTY_RESULTS: never[] = []
+const EMPTY_STUDENTS: never[] = []
+const EMPTY_OFFERINGS: never[] = []
+
 import { useMemo, useState } from 'react'
 import {
   useAdminResults,
@@ -58,10 +63,10 @@ export function ExaminationResultsAdminPage() {
   const updateResult = useUpdateAdminResult()
   const deleteResult = useDeleteAdminResult()
 
-  const exams = examsQuery.data?.results ?? []
-  const results = resultsQuery.data?.results ?? []
-  const students = studentsQuery.data?.results ?? []
-  const offerings = offeringsQuery.data?.results ?? []
+  const exams = examsQuery.data?.results ?? EMPTY_EXAMS
+  const results = resultsQuery.data?.results ?? EMPTY_RESULTS
+  const students = studentsQuery.data?.results ?? EMPTY_STUDENTS
+  const offerings = offeringsQuery.data?.results ?? EMPTY_OFFERINGS
 
   const exam = exams.find((item) => item.id === selectedExam)
 
