@@ -52,6 +52,7 @@ import CoursesPage from '../../features/academics/pages/CoursesPage'
 import CourseCreatePage from '../../features/academics/pages/CourseCreatePage'
 import CourseOfferingsPage from '../../features/academics/pages/CourseOfferingsPage'
 import TimetablePage from '../../features/timetable/pages/TimetablePage'
+import MyTimetablePage from '../../features/timetable/pages/MyTimetablePage'
 import AssignmentsPage from '../../features/assignments/pages/AssignmentsPage'
 
 // ---------------------------------------------------------
@@ -620,6 +621,16 @@ export const router = createBrowserRouter([
   ),
 },
 {
+  path: 'student/timetable',
+  element: (
+    <StudentRoute>
+      <AppShell>
+        <MyTimetablePage role="STUDENT" />
+      </AppShell>
+    </StudentRoute>
+  ),
+},
+{
   path: 'students/:id/profile',
   element: (
     <ProtectedRoute>
@@ -786,7 +797,7 @@ export const router = createBrowserRouter([
   element: (
     <FacultyRoute>
       <AppShell>
-        <FacultyModulePage />
+        <MyTimetablePage role="FACULTY" />
       </AppShell>
     </FacultyRoute>
   ),
