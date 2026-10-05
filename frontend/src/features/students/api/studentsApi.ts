@@ -48,93 +48,6 @@ export type {
  */
 export interface StudentCourse {
   id: number
-  semester: number
-  semester_number: number
-  program_name: string
-  regulation: number
-  regulation_code: string
-  code: string
-  name: string
-  credits: number
-  is_active: boolean
-  created_at: string
-  updated_at: string
-
-  // ==========================================================================
-  // COURSE OFFERING ENROLLMENTS
-  // ===========================================================================
-
-  courseOfferingEnrollments: {
-    list: async (params?: Record<string, string | number | boolean>): Promise<PaginatedResponse<CourseOfferingEnrollment>> => {
-      const response = await apiClient.get<PaginatedResponse<CourseOfferingEnrollment>>(
-        '/students/course-offering-enrollments/',
-        { params },
-      )
-      return response.data
-    },
-    get: async (id: number): Promise<CourseOfferingEnrollment> => {
-      const response = await apiClient.get<CourseOfferingEnrollment>(
-        `/students/course-offering-enrollments/${id}/`,
-      )
-      return response.data
-    },
-    create: async (data: CourseOfferingEnrollmentCreateData): Promise<CourseOfferingEnrollment> => {
-      const response = await apiClient.post<CourseOfferingEnrollment>(
-        '/students/course-offering-enrollments/',
-        data,
-      )
-      return response.data
-    },
-    update: async (id: number, data: CourseOfferingEnrollmentUpdateData): Promise<CourseOfferingEnrollment> => {
-      const response = await apiClient.patch<CourseOfferingEnrollment>(
-        `/students/course-offering-enrollments/${id}/`,
-        data,
-      )
-      return response.data
-    },
-    delete: async (id: number): Promise<void> => {
-      await apiClient.delete(
-        `/students/course-offering-enrollments/${id}/`,
-      )
-    },
-  },
-
-}
-
-export interface StudentCoursesResponse {
-  student_id: string
-  academic_year: number | null
-  academic_year_name: string | null
-  semester: number | null
-  semester_number: number | null
-  program_name: string | null
-  courses: StudentCourse[]
-}
-export interface StudentCourse {
-  id: number
-  semester: number
-  semester_number: number
-  program_name: string
-  regulation: number
-  regulation_code: string
-  code: string
-  name: string
-  credits: number
-  is_active: boolean
-  created_at: string
-  updated_at: string
-}
-export interface StudentCoursesResponse {
-  student_id: string
-  academic_year: number | null
-  academic_year_name: string | null
-  semester: number | null
-  semester_number: number | null
-  program_name: string | null
-  courses: StudentCourse[]
-}
-export interface StudentCourse {
-  id: number
   code: string
   name: string
   credits: number
@@ -200,13 +113,6 @@ export const studentsApi = {
 
     return response.data
   },
-  courses: async (): Promise<StudentCoursesResponse> => {
-  const response = await apiClient.get<StudentCoursesResponse>(
-    '/students/students/me/courses/',
-  )
-
-  return response.data
-},
 
   // ==========================================================================
   // STUDENTS
