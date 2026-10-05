@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '../../app/store/authStore'
+import { logout as revokeSession } from '../../features/auth/auth.service'
 import { useCurrentUser } from '../../features/auth/useCurrentUser'
 
 export function Topbar() {
@@ -17,12 +18,13 @@ export function Topbar() {
     user?.username ||
     'User'
 
-  const handleLogout = () => {
-    logout()
-
-    navigate('/login', {
-      replace: true,
-    })
+  const handleLogout = async () => {
+    try {
+      await revokeSession()
+    } finally {
+      logout()
+      navigate('/', { replace: true })
+    }
   }
 
   return (
