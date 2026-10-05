@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { ProtectedRoute } from './ProtectedRoute'
 import { RoleRoute } from './RoleRoute'
 import { PortalHomePage } from '../../features/auth/PortalHomePage'
 import { PortalLoginPage } from '../../features/auth/PortalLoginPage'
@@ -120,7 +119,6 @@ export const router = createBrowserRouter([
     { path: 'student/dashboard', element: <StudentRoute><AppShell><StudentDashboardPage /></AppShell></StudentRoute> },
     { path: 'student/profile', element: <StudentRoute><AppShell><StudentProfilePage /></AppShell></StudentRoute> },
     { path: 'student/courses', element: <StudentRoute><AppShell><StudentCoursessPage /></AppShell></StudentRoute> },
-    { path: 'student/course-offerings', element: <StudentRoute><AppShell><StudentCourseOfferingsPage /></AppShell></StudentRoute> },
     { path: 'student/attendance', element: <StudentRoute><AppShell><StudentAttendancePage /></AppShell></StudentRoute> },
     { path: 'student/timetable', element: <StudentRoute><AppShell><MyTimetablePage role="STUDENT" /></AppShell></StudentRoute> },
     { path: 'student/assignments', element: <StudentRoute><AppShell><AssignmentsPage /></AppShell></StudentRoute> },
