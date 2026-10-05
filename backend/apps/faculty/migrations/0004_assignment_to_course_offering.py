@@ -23,7 +23,7 @@ def migrate_assignments_to_offerings(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
+    # This migration creates CourseOffering rows and then alters the same table\n    # by changing/removing related foreign keys. PostgreSQL otherwise keeps\n    # trigger events pending until the surrounding transaction commits.\n    atomic = False\n
     dependencies = [
         ("academics", "0004_course_offering_and_course_hours"),
         ("faculty", "0003_alter_faculty_faculty_id_and_more"),
