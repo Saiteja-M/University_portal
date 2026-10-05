@@ -1,3 +1,4 @@
+import StudentCourseOfferingsPage from '../../features/students/pages/StudentCourseOfferingsPage'
 import {
   createBrowserRouter,
   Navigate,
@@ -489,6 +490,14 @@ export const router = createBrowserRouter([
         ),
       },
 
+      {
+        path: 'students/course-offerings',
+        element: (
+          <ProtectedRoute>
+            <StudentCourseOfferingsPage />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: 'academics/course-offerings',
         element: (
