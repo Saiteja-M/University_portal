@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ExamViewSet,
     AdminStudentResultViewSet,
+    FacultyExamViewSet,
+    FacultyResultViewSet,
     MyResultsView,
     MyResultsSummaryView,
 )
@@ -15,6 +17,18 @@ router.register(
     r'exams',
     ExamViewSet,
     basename='exam',
+)
+
+router.register(
+    r'faculty/exams',
+    FacultyExamViewSet,
+    basename='faculty-exam',
+)
+
+router.register(
+    r'faculty/results',
+    FacultyResultViewSet,
+    basename='faculty-result',
 )
 
 router.register(
