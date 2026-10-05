@@ -7,6 +7,7 @@ from .permissions import FacultyAccessPermission
 
 
 class FacultyMyCourseSerializer(serializers.ModelSerializer):
+    faculty = serializers.IntegerField(source="faculty.id", read_only=True)
     course_id = serializers.IntegerField(source="offering.course.id", read_only=True)
     course_code = serializers.CharField(source="offering.course.code", read_only=True)
     course_name = serializers.CharField(source="offering.course.name", read_only=True)
@@ -21,7 +22,7 @@ class FacultyMyCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = FacultyCourseAssignment
         fields = [
-            "id", "offering", "course_id", "course_code", "course_name", "credits",
+            "id", "offering", "faculty", "course_id", "course_code", "course_name", "credits",
             "academic_year_name", "semester_number", "program_name", "section",
             "offering_status", "capacity", "assigned_date", "is_active",
         ]
@@ -71,10 +72,8 @@ class FacultyMyStudentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FacultyMyStudentSerializer
     permission_classes = [FacultyAccessPermission]
     search_fields = [
-        "student_enrollment__student__student_id",
-        "student_enrollment__student__admission_number",
-        "student_enrollment__student__user__first_name",
-        "student_enrollment__student__user__last_name",
+        "student_enrollment__student__student_id", "student_enrollment__student__admission_number",
+        "student_enrollment__student__user__first_name", "student_enrollment__student__user__last_name",
         "offering__course__code", "offering__course__name", "offering__section",
     ]
     ordering_fields = ["student_enrollment__student__student_id", "offering__course__code", "enrolled_date"]
@@ -87,7 +86,7 @@ class FacultyMyStudentViewSet(viewsets.ReadOnlyModelViewSet):
         assigned_offerings = FacultyCourseAssignment.objects.filter(
             faculty=faculty, is_active=True, offering__is_active=True
         ).values("offering_id")
-        return CourseOfferingEnrollment.objects.select_related(
+        queryset = CourseOfferingEnrollment.objects.select_related(
             "student_enrollment__student__user", "offering__course",
             "offering__academic_year", "offering__semester__program",
         ).filter(
@@ -96,3 +95,7 @@ class FacultyMyStudentViewSet(viewsets.ReadOnlyModelViewSet):
             status=CourseOfferingEnrollment.Status.ENROLLED,
             offering__status__in=["PLANNED", "OPEN"],
         ).distinct()
+        offering_id = self.request.query_params.get("offering")
+        if offering_id:
+            queryset = queryset.filter(offering_id=offering_id)
+        return queryset
