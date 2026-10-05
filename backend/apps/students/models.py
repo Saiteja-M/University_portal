@@ -256,3 +256,60 @@ class Enrollment(TimeStampedModel):
             f"{self.academic_year.name} - "
             f"Semester {self.semester.number}"
         )
+
+class CourseOfferingEnrollment(TimeStampedModel):
+    """Links a semester-level student enrollment to a specific course offering."""
+
+    class Status(models.TextChoices):
+        ENROLLED = "ENROLLED", "Enrolled"
+        DROPPED = "DROPPED", "Dropped"
+        COMPLETED = "COMPLETED", "Completed"
+
+    student_enrollment = models.ForeignKey(
+        Enrollment,
+        on_delete=models.PROTECT,
+        related_name="course_offering_enrollments",
+    )
+    offering = models.ForeignKey(
+        "academics.CourseOffering",
+        on_delete=models.PROTECT,
+        related_name="student_enrollments",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ENROLLED,
+    )
+    enrolled_date = models.DateField()
+
+    class Meta:
+        ordering = ["student_enrollment__student__student_id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student_enrollment", "offering"],
+                name="unique_student_enrollment_course_offering",
+            ),
+        ]
+
+    def clean(self):
+        if self.student_enrollment_id and self.offering_id:
+            enrollment = self.student_enrollment
+            offering = self.offering
+            if enrollment.academic_year_id != offering.academic_year_id:
+                from django.core.exceptions import ValidationError
+                raise ValidationError({
+                    "offering": "Course offering academic year must match the student's enrollment."
+                })
+            if enrollment.semester_id != offering.semester_id:
+                from django.core.exceptions import ValidationError
+                raise ValidationError({
+                    "offering": "Course offering semester must match the student's enrollment."
+                })
+            if enrollment.student.program_id != offering.semester.program_id:
+                from django.core.exceptions import ValidationError
+                raise ValidationError({
+                    "offering": "Course offering must belong to the student's program."
+                })
+
+    def __str__(self):
+        return f"{self.student_enrollment.student.student_id} - {self.offering.course.code} - {self.offering.section}"
