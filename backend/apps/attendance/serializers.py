@@ -131,6 +131,20 @@ class AttendanceSessionSerializer(serializers.ModelSerializer):
 
         errors = {}
 
+        offering = attrs.get("offering")
+        if offering is None and instance:
+            offering = instance.offering
+        if offering is None:
+            errors["offering"] = "A course offering is required."
+        elif offering.course_id != course.id:
+            errors["offering"] = "The course offering does not match the selected course."
+        elif offering.academic_year_id != academic_year.id:
+            errors["offering"] = "The course offering does not match the selected academic year."
+        elif offering.semester_id != semester.id:
+            errors["offering"] = "The course offering does not match the selected semester."
+        elif not offering.faculty_assignments.filter(faculty_id=faculty.id, is_active=True).exists():
+            errors["faculty"] = "The faculty member is not assigned to this course offering."
+
         # -------------------------------------------------
         # Faculty validation
         # -------------------------------------------------
