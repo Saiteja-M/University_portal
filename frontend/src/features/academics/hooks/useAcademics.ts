@@ -400,3 +400,66 @@ export function useDeleteCourse() {
     },
   })
 }
+
+export function useCourseOfferings(
+  params?: AcademicListParams,
+) {
+  return useQuery({
+    queryKey: [
+      ...academicsKeys.all,
+      'course-offerings',
+      params ?? {},
+    ],
+    queryFn: () =>
+      academicsApi.courseOfferings.list(params),
+  })
+}
+
+export function useCreateCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (
+      data: CourseOfferingCreateData,
+    ) => academicsApi.courseOfferings.create(data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
+
+export function useUpdateCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number
+      data: CourseOfferingUpdateData
+    }) =>
+      academicsApi.courseOfferings.update(id, data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
+
+export function useDeleteCourseOffering() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      academicsApi.courseOfferings.delete(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: academicsKeys.all,
+      })
+    },
+  })
+}
