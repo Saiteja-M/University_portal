@@ -288,7 +288,7 @@ export function useUpdateFacultyProfile() {
 ========================================================= */
 
 export function useFacultyCourseAssignments(
-  params?: { faculty?: number },
+  params?: { faculty?: number; offering?: number },
 ) {
   return useQuery({
     queryKey:
