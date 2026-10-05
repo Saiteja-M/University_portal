@@ -648,7 +648,7 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        if self.action in {"retrieve", "update", "partial_update"} and getattr(self.request.user, "student", None):
+        if self.action in {"create", "retrieve", "update", "partial_update"} and getattr(self.request.user, "student", None):
             return [IsAuthenticatedStudent()]
         if self.request.method in SAFE_METHODS:
             return [IsStudentViewer()]
@@ -662,6 +662,8 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
+        if getattr(self.request.user, "student", None):
+            serializer.validated_data["student"] = self.request.user.student
         profile = create_student_profile(
             **serializer.validated_data,
         )
