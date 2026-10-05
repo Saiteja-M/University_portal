@@ -160,7 +160,7 @@ export default function FacultyDashboardPage() {
 
   const uniqueCourses = useMemo(() => {
     const ids = new Set(
-      activeAssignments.map((item) => String(item.course)),
+      activeAssignments.map((item) => item.course_code || String(item.offering)),
     )
     return ids.size
   }, [activeAssignments])
@@ -181,7 +181,7 @@ export default function FacultyDashboardPage() {
           item.course_name,
           item.course_code,
           item.section,
-          item.semester,
+          item.semester_number,
         ]
           .map((value) => String(value ?? ''))
           .join(' ')
@@ -211,7 +211,7 @@ export default function FacultyDashboardPage() {
     const rows = filteredAssignments.map((item) => [
       item.faculty_name || `Faculty #${item.faculty}`,
       item.faculty_employee_id,
-      item.course_name || `Course #${item.course}`,
+      item.course_name || `Offering #${item.offering}`,
       item.course_code,
       item.semester,
       item.section,
@@ -568,7 +568,7 @@ export default function FacultyDashboardPage() {
 
                     <td className="px-5 py-4 sm:px-6">
                       <p className="text-sm font-semibold text-slate-900">
-                        {item.course_name || `Course #${item.course}`}
+                        {item.course_name || `Offering #${item.offering}`}
                       </p>
                       <p className="mt-1 text-xs text-slate-500">
                         {item.course_code || 'No course code'}
