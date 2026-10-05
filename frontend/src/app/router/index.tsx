@@ -52,6 +52,7 @@ import CoursesPage from '../../features/academics/pages/CoursesPage'
 import CourseCreatePage from '../../features/academics/pages/CourseCreatePage'
 import CourseOfferingsPage from '../../features/academics/pages/CourseOfferingsPage'
 import TimetablePage from '../../features/timetable/pages/TimetablePage'
+import AssignmentsPage from '../../features/assignments/pages/AssignmentsPage'
 
 // ---------------------------------------------------------
 // Students
@@ -499,6 +500,39 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: 'academics/assignments',
+        element: (
+          <ProtectedRoute>
+            <AppShell>
+              <AssignmentsPage />
+            </AppShell>
+          </ProtectedRoute>
+        ),
+      },
+
+      {
+        path: 'faculty/assignments',
+        element: (
+          <FacultyRoute>
+            <AppShell>
+              <AssignmentsPage />
+            </AppShell>
+          </FacultyRoute>
+        ),
+      },
+
+      {
+        path: 'student/assignments',
+        element: (
+          <StudentRoute>
+            <AppShell>
+              <AssignmentsPage />
+            </AppShell>
+          </StudentRoute>
+        ),
+      },
+
       {
         path: 'academics/course-offerings',
         element: (
