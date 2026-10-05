@@ -348,8 +348,11 @@ class CourseSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        semester = attrs.get("semester")
-        regulation = attrs.get("regulation")
+        semester = attrs.get("semester", getattr(self.instance, "semester", None))
+        regulation = attrs.get(
+            "regulation",
+            getattr(self.instance, "regulation", None),
+        )
 
         if semester and regulation:
             if semester.program_id != regulation.program_id:
@@ -359,6 +362,16 @@ class CourseSerializer(serializers.ModelSerializer):
                         "to the selected semester's program."
                     )
                 })
+
+        if semester and not semester.is_active:
+            raise serializers.ValidationError({
+                "semester": "Course must belong to an active semester."
+            })
+
+        if regulation and not regulation.is_active:
+            raise serializers.ValidationError({
+                "regulation": "Course must use an active regulation."
+            })
 
         return attrs
 
@@ -422,18 +435,39 @@ class CourseOfferingSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        course = attrs.get("course")
-        semester = attrs.get("semester")
-        academic_year = attrs.get("academic_year")
+        course = attrs.get("course", getattr(self.instance, "course", None))
+        semester = attrs.get(
+            "semester",
+            getattr(self.instance, "semester", None),
+        )
+        academic_year = attrs.get(
+            "academic_year",
+            getattr(self.instance, "academic_year", None),
+        )
 
         if course and semester and course.semester_id != semester.id:
             raise serializers.ValidationError({
-                "semester": "The selected semester must match the course semester."
+                "semester": (
+                    "The selected semester must match the course semester."
+                )
             })
 
-        if semester and academic_year and semester.academic_year_id != academic_year.id:
+        if semester and academic_year:
+            if semester.academic_year_id != academic_year.id:
+                raise serializers.ValidationError({
+                    "academic_year": (
+                        "The selected academic year must match the semester."
+                    )
+                })
+
+        if course and not course.is_active:
             raise serializers.ValidationError({
-                "academic_year": "The selected academic year must match the semester."
+                "course": "Course offering must use an active course."
+            })
+
+        if semester and not semester.is_active:
+            raise serializers.ValidationError({
+                "semester": "Course offering must use an active semester."
             })
 
         return attrs
