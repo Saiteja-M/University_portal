@@ -1,8 +1,9 @@
 from django.db.models import Subquery
 from rest_framework import serializers, viewsets
 
+from apps.academics.models import CourseOffering
 from apps.students.models import CourseOfferingEnrollment, Enrollment
-from .models import FacultyCourseAssignment
+from .models import Faculty, FacultyCourseAssignment
 from .permissions import FacultyAccessPermission
 
 
@@ -55,47 +56,95 @@ class FacultyMyStudentSerializer(serializers.ModelSerializer):
 class FacultyMyCourseViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FacultyMyCourseSerializer
     permission_classes = [FacultyAccessPermission]
-    search_fields = ["offering__course__code", "offering__course__name", "offering__section", "offering__semester__program__name"]
-    ordering_fields = ["offering__course__code", "offering__semester__number", "offering__section", "assigned_date"]
+    search_fields = [
+        "offering__course__code", "offering__course__name",
+        "offering__section", "offering__semester__program__name",
+    ]
+    ordering_fields = [
+        "offering__course__code", "offering__semester__number",
+        "offering__section", "assigned_date",
+    ]
     ordering = ["offering__course__code", "offering__section"]
 
     def get_queryset(self):
         faculty = getattr(self.request.user, "faculty", None)
-        if not faculty:
+        if not faculty or faculty.status != Faculty.Status.ACTIVE:
             return FacultyCourseAssignment.objects.none()
+
         return FacultyCourseAssignment.objects.select_related(
-            "offering__course", "offering__academic_year", "offering__semester__program"
-        ).filter(faculty=faculty, is_active=True, offering__is_active=True)
+            "offering__course",
+            "offering__academic_year",
+            "offering__semester__program",
+        ).filter(
+            faculty=faculty,
+            is_active=True,
+            offering__is_active=True,
+            offering__status__in=[
+                CourseOffering.Status.PLANNED,
+                CourseOffering.Status.OPEN,
+            ],
+            offering__semester__is_active=True,
+            offering__academic_year__start_date__isnull=False,
+        )
 
 
 class FacultyMyStudentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FacultyMyStudentSerializer
     permission_classes = [FacultyAccessPermission]
     search_fields = [
-        "student_enrollment__student__student_id", "student_enrollment__student__admission_number",
-        "student_enrollment__student__user__first_name", "student_enrollment__student__user__last_name",
-        "offering__course__code", "offering__course__name", "offering__section",
+        "student_enrollment__student__student_id",
+        "student_enrollment__student__admission_number",
+        "student_enrollment__student__user__first_name",
+        "student_enrollment__student__user__last_name",
+        "offering__course__code",
+        "offering__course__name",
+        "offering__section",
     ]
-    ordering_fields = ["student_enrollment__student__student_id", "offering__course__code", "enrolled_date"]
-    ordering = ["student_enrollment__student__student_id", "offering__course__code"]
+    ordering_fields = [
+        "student_enrollment__student__student_id",
+        "offering__course__code",
+        "enrolled_date",
+    ]
+    ordering = [
+        "student_enrollment__student__student_id",
+        "offering__course__code",
+    ]
 
     def get_queryset(self):
         faculty = getattr(self.request.user, "faculty", None)
-        if not faculty:
+        if not faculty or faculty.status != Faculty.Status.ACTIVE:
             return CourseOfferingEnrollment.objects.none()
+
         assigned_offerings = FacultyCourseAssignment.objects.filter(
-            faculty=faculty, is_active=True, offering__is_active=True
+            faculty=faculty,
+            is_active=True,
+            offering__is_active=True,
+            offering__status__in=[
+                CourseOffering.Status.PLANNED,
+                CourseOffering.Status.OPEN,
+            ],
+            offering__semester__is_active=True,
         ).values("offering_id")
+
         queryset = CourseOfferingEnrollment.objects.select_related(
-            "student_enrollment__student__user", "offering__course",
-            "offering__academic_year", "offering__semester__program",
+            "student_enrollment__student__user",
+            "offering__course",
+            "offering__academic_year",
+            "offering__semester__program",
         ).filter(
             offering_id__in=Subquery(assigned_offerings),
             student_enrollment__status=Enrollment.Status.ACTIVE,
             status=CourseOfferingEnrollment.Status.ENROLLED,
-            offering__status__in=["PLANNED", "OPEN"],
+            offering__status__in=[
+                CourseOffering.Status.PLANNED,
+                CourseOffering.Status.OPEN,
+            ],
+            offering__semester__is_active=True,
+            offering__is_active=True,
         ).distinct()
+
         offering_id = self.request.query_params.get("offering")
         if offering_id:
             queryset = queryset.filter(offering_id=offering_id)
+
         return queryset

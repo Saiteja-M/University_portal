@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -28,14 +29,8 @@ class Faculty(TimeStampedModel):
         blank=True,
     )
 
-    faculty_id = models.CharField(
-    max_length=30,
-    unique=True,
-)
-    employee_id = models.CharField(
-        max_length=50,
-        unique=True,
-    )
+    faculty_id = models.CharField(max_length=30, unique=True)
+    employee_id = models.CharField(max_length=50, unique=True)
 
     department = models.ForeignKey(
         Department,
@@ -43,9 +38,7 @@ class Faculty(TimeStampedModel):
         related_name="faculty_members",
     )
 
-    designation = models.CharField(
-        max_length=100,
-    )
+    designation = models.CharField(max_length=100)
 
     employment_type = models.CharField(
         max_length=20,
@@ -89,83 +82,31 @@ class FacultyProfile(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="profile",
     )
-    photo = models.ImageField(
-    upload_to="faculty/photos/",
-    blank=True,
-    null=True,
-)
-
-    first_name = models.CharField(
-    max_length=100,
-    blank=True,
-    null=True,
-)
-
-    last_name = models.CharField(
-    max_length=100,
-    blank=True,
-    null=True,
-)
-
-    date_of_birth = models.DateField()
-
-    gender = models.CharField(
-        max_length=10,
-        choices=Gender.choices,
-    )
-
-    blood_group = models.CharField(
-    max_length=10,
-    choices=BloodGroup.choices,
-    blank=True,
-    null=True,
-)
-
-    phone_number = models.CharField(
-        max_length=20,
-    )
-
-    alternate_phone_number = models.CharField(
-        max_length=20,
-        blank=True,
-    )
-
-    institutional_email = models.EmailField(
-    unique=True,
-    blank=True,
-    null=True,
-)
-
-    personal_email = models.EmailField(
-
-    blank=True,
-    null=True,
-)
-
-    address = models.TextField(
-        blank=True,
-    )
-
-    city = models.CharField(
-        max_length=100,
-        blank=True,
-    )
-
-    state = models.CharField(
-        max_length=100,
-        blank=True,
-    )
-
-    postal_code = models.CharField(
-        max_length=20,
-        blank=True,
-    )
 
     photo = models.ImageField(
         upload_to="faculty/photos/",
         blank=True,
         null=True,
     )
+
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length=10, choices=Gender.choices)
+    blood_group = models.CharField(
+        max_length=10,
+        choices=BloodGroup.choices,
+        blank=True,
+        null=True,
+    )
+    phone_number = models.CharField(max_length=20)
+    alternate_phone_number = models.CharField(max_length=20, blank=True)
+    institutional_email = models.EmailField(unique=True, blank=True, null=True)
+    personal_email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
 
     class Meta:
         ordering = ["first_name", "last_name"]
@@ -180,36 +121,14 @@ class FacultyQualification(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="qualifications",
     )
-
-    degree = models.CharField(
-        max_length=150,
-    )
-
-    specialization = models.CharField(
-        max_length=200,
-        blank=True,
-    )
-
-    institution = models.CharField(
-        max_length=200,
-    )
-
-    university = models.CharField(
-        max_length=200,
-        blank=True,
-    )
-
+    degree = models.CharField(max_length=150)
+    specialization = models.CharField(max_length=200, blank=True)
+    institution = models.CharField(max_length=200)
+    university = models.CharField(max_length=200, blank=True)
     year_of_passing = models.PositiveSmallIntegerField(
-        validators=[
-            MinValueValidator(1950),
-            MaxValueValidator(2100),
-        ],
+        validators=[MinValueValidator(1950), MaxValueValidator(2100)]
     )
-
-    grade_or_percentage = models.CharField(
-        max_length=50,
-        blank=True,
-    )
+    grade_or_percentage = models.CharField(max_length=50, blank=True)
 
     class Meta:
         ordering = ["-year_of_passing"]
@@ -224,49 +143,31 @@ class FacultyExperience(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name="experiences",
     )
-
-    organization = models.CharField(
-        max_length=200,
-    )
-
-    designation = models.CharField(
-        max_length=100,
-    )
-
+    organization = models.CharField(max_length=200)
+    designation = models.CharField(max_length=100)
     start_date = models.DateField()
-
-    end_date = models.DateField(
-        null=True,
-        blank=True,
-    )
-
-    description = models.TextField(
-        blank=True,
-    )
+    end_date = models.DateField(null=True, blank=True)
+    description = models.TextField(blank=True)
 
     class Meta:
         ordering = ["-start_date"]
 
     def __str__(self):
-        return (
-            f"{self.faculty.faculty_id} - "
-            f"{self.organization}"
-        )
+        return f"{self.faculty.faculty_id} - {self.organization}"
+
+
 class FacultyCourseAssignment(TimeStampedModel):
     faculty = models.ForeignKey(
         Faculty,
         on_delete=models.CASCADE,
         related_name="course_assignments",
     )
-
     offering = models.ForeignKey(
         "academics.CourseOffering",
         on_delete=models.PROTECT,
         related_name="faculty_assignments",
     )
-
     assigned_date = models.DateField()
-
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -281,9 +182,13 @@ class FacultyCourseAssignment(TimeStampedModel):
     def clean(self):
         if self.offering_id and self.faculty_id:
             if not self.offering.is_active:
-                raise ValidationError({"offering": "The selected course offering is inactive."})
+                raise ValidationError(
+                    {"offering": "The selected course offering is inactive."}
+                )
             if self.offering.status in {"CLOSED", "CANCELLED"}:
-                raise ValidationError({"offering": "Closed or cancelled course offerings cannot receive faculty assignments."})
+                raise ValidationError(
+                    {"offering": "Closed or cancelled course offerings cannot receive faculty assignments."}
+                )
 
     def __str__(self):
         return (
