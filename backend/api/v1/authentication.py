@@ -8,7 +8,7 @@ from drf_spectacular.utils import (
 
 from rest_framework import serializers, status
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -41,6 +41,9 @@ class LoginView(APIView):
             400: OpenApiResponse(
                 description="Invalid username or password."
             ),
+            403: OpenApiResponse(
+                description="Account is not authorized to sign in."
+            ),
         },
     )
     def post(self, request):
@@ -61,17 +64,11 @@ class LoginView(APIView):
             serializer.validated_data["password"]
         )
 
-        # --------------------------------------------------
-        # 1. Try normal Django username authentication
-        # --------------------------------------------------
         user = authenticate(
             username=identifier,
             password=password,
         )
 
-        # --------------------------------------------------
-        # 2. If that fails, allow institutional email
-        # --------------------------------------------------
         if user is None:
             email_user = (
                 User.objects
@@ -87,23 +84,17 @@ class LoginView(APIView):
                     password=password,
                 )
 
-        # --------------------------------------------------
-        # 3. Invalid credentials
-        # --------------------------------------------------
         if user is None:
             return Response(
                 {
                     "detail": (
-                        "Invalid Student ID, username, "
-                        "email, or password."
+                        "Invalid username, email, "
+                        "or password."
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # --------------------------------------------------
-        # 4. Check student registration status
-        # --------------------------------------------------
         profile = getattr(
             user,
             "profile",
@@ -128,9 +119,6 @@ class LoginView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        # --------------------------------------------------
-        # 5. Create/retrieve authentication token
-        # --------------------------------------------------
         token, _ = Token.objects.get_or_create(
             user=user,
         )
@@ -141,4 +129,34 @@ class LoginView(APIView):
                 "username": user.username,
                 "user_id": user.id,
             }
+        )
+
+
+class LogoutView(APIView):
+    """
+    Revoke the current DRF token.
+
+    Logout is intentionally server-side so a stolen or previously
+    persisted token cannot remain valid after the user signs out.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={
+            204: OpenApiResponse(
+                description="Authentication token revoked."
+            ),
+            401: OpenApiResponse(
+                description="Authentication is required."
+            ),
+        },
+    )
+    def post(self, request):
+        Token.objects.filter(
+            user=request.user,
+        ).delete()
+
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
         )

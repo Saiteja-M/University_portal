@@ -12,6 +12,7 @@ import { getCurrentUser } from './user.service'
 
 type PortalType =
   | 'ADMIN'
+  | 'HOD'
   | 'FACULTY'
   | 'STUDENT'
 
@@ -34,13 +35,21 @@ const PORTAL_CONFIG = {
     allowedRoles: ['ADMIN'],
   },
 
+  HOD: {
+    title: 'HOD Login',
+    subtitle: 'Academic management portal',
+    button: 'Sign in as HOD',
+    dashboard: '/academics',
+    allowedRoles: ['HOD'],
+  },
+
   FACULTY: {
     title: 'Faculty Login',
     subtitle:
       'Faculty and teaching portal',
     button: 'Sign in as Faculty',
     dashboard: '/faculty/dashboard',
-    allowedRoles: ['FACULTY', 'HOD'],
+    allowedRoles: ['FACULTY'],
   },
 
   STUDENT: {
@@ -242,7 +251,8 @@ export function PortalLoginPage({
        */
       const isAdmin =
         portal === 'ADMIN' &&
-        user.is_superuser
+        (user.is_superuser ||
+          user.roles.includes('ADMIN'))
 
       const hasRequiredRole =
         user.roles.some((role) =>
