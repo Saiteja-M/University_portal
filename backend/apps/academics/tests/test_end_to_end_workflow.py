@@ -226,15 +226,24 @@ class EndToEndAcademicWorkflowTests(TestCase):
             name="Digital Systems",
         )
 
+        unassigned_faculty = Faculty.objects.create(
+            faculty_id="FAC002",
+            employee_id="EMP002",
+            department=self.department,
+            designation="Assistant Professor",
+            joining_date=date(2025, 7, 1),
+            status=Faculty.Status.ACTIVE,
+        )
+
         with self.assertRaises(ValidationError):
             TimetableSlot(
                 offering=self.offering,
-                faculty=self.faculty,
+                faculty=unassigned_faculty,
                 day_of_week=TimetableSlot.DayOfWeek.TUESDAY,
                 period=2,
                 start_time=time(10, 0),
                 end_time=time(10, 50),
-                room="ECE-101",
+                room="CSE-102",
                 building="Academic Block",
             ).full_clean()
 
