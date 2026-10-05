@@ -1,9 +1,8 @@
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.academics.models import CourseOffering
 from apps.faculty.models import FacultyCourseAssignment
-from apps.students.models import CourseOfferingEnrollment, Student
+from apps.students.models import CourseOfferingEnrollment
 from .models import Assignment, AssignmentSubmission
 
 
@@ -19,11 +18,16 @@ class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = [
-            "id", "offering", "course_code", "course_name", "section", "academic_year_name",
-            "semester_number", "program_name", "title", "description", "due_date", "max_marks",
-            "attachment", "status", "is_active", "submission_count", "created_at", "updated_at",
+            "id", "offering", "course_code", "course_name", "section",
+            "academic_year_name", "semester_number", "program_name",
+            "title", "description", "due_date", "max_marks", "attachment",
+            "status", "is_active", "submission_count", "created_at", "updated_at",
         ]
-        read_only_fields = ["id", "course_code", "course_name", "section", "academic_year_name", "semester_number", "program_name", "submission_count", "created_at", "updated_at"]
+        read_only_fields = [
+            "id", "course_code", "course_name", "section",
+            "academic_year_name", "semester_number", "program_name",
+            "submission_count", "created_at", "updated_at",
+        ]
 
     def get_submission_count(self, obj):
         return obj.submissions.count()
@@ -35,9 +39,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
             if not offering.is_active or offering.status in {"CLOSED", "CANCELLED"}:
                 raise serializers.ValidationError({"offering": "Only active, open course offerings can have assignments."})
             user = self.context["request"].user
-            if user.groups.filter(name="FACULTY").exists() and not user.groups.filter(name__in=["ADMIN", "HOD"]).exists():
+            if user.groups.filter(name="FACULTY").exists() and not user.groups.filter(name__in={"ADMIN", "HOD"}).exists():
                 faculty = getattr(user, "faculty", None)
-                if not faculty or not FacultyCourseAssignment.objects.filter(faculty=faculty, offering=offering, is_active=True).exists():
+                if not faculty or not FacultyCourseAssignment.objects.filter(
+                    faculty=faculty, offering=offering, is_active=True
+                ).exists():
                     raise serializers.ValidationError({"offering": "You are not assigned to this course offering."})
         if due_date and due_date <= timezone.now():
             raise serializers.ValidationError({"due_date": "Due date must be in the future."})
@@ -52,11 +58,30 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AssignmentSubmission
-        fields = ["id", "assignment", "assignment_title", "course_code", "student", "student_id", "student_name", "submitted_at", "file", "answer_text", "marks", "feedback", "status", "created_at", "updated_at"]
-        read_only_fields = ["id", "student", "student_id", "student_name", "submitted_at", "marks", "feedback", "status", "created_at", "updated_at"]
+        fields = [
+            "id", "assignment", "assignment_title", "course_code", "student",
+            "student_id", "student_name", "submitted_at", "file", "answer_text",
+            "marks", "feedback", "status", "created_at", "updated_at",
+        ]
+        read_only_fields = [
+            "id", "student", "student_id", "student_name", "submitted_at",
+            "created_at", "updated_at",
+        ]
 
     def get_student_name(self, obj):
         return obj.student.user.get_full_name().strip() if obj.student.user else obj.student.student_id
+
+    def get_extra_kwargs(self):
+        extra = super().get_extra_kwargs()
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        if user and user.groups.filter(name="STUDENT").exists() and not user.groups.filter(name__in={"ADMIN", "HOD", "FACULTY"}).exists():
+            extra.update({
+                "marks": {"read_only": True},
+                "feedback": {"read_only": True},
+                "status": {"read_only": True},
+            })
+        return extra
 
     def validate(self, attrs):
         request = self.context["request"]
@@ -66,17 +91,18 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
         if not assignment.is_active or assignment.status != Assignment.Status.PUBLISHED:
             raise serializers.ValidationError({"assignment": "Only published active assignments accept submissions."})
         student = getattr(request.user, "student", None)
-        if not student:
+        is_student = request.user.groups.filter(name="STUDENT").exists()
+        is_manager = request.user.is_superuser or request.user.groups.filter(name__in={"ADMIN", "HOD", "FACULTY"}).exists()
+        if not student or not is_student:
+            if is_manager:
+                return attrs
             raise serializers.ValidationError({"assignment": "Only students can submit assignments."})
         enrolled = CourseOfferingEnrollment.objects.filter(
-            offering=assignment.offering, student_enrollment__student=student,
-            student_enrollment__status="ACTIVE", status=CourseOfferingEnrollment.Status.ENROLLED,
+            offering=assignment.offering,
+            student_enrollment__student=student,
+            student_enrollment__status="ACTIVE",
+            status=CourseOfferingEnrollment.Status.ENROLLED,
         ).exists()
         if not enrolled:
             raise serializers.ValidationError({"assignment": "You are not enrolled in this course offering."})
-        marks = attrs.get("marks")
-        if marks is not None and marks > assignment.max_marks:
-            raise serializers.ValidationError({"marks": "Marks cannot exceed the assignment maximum marks."})
-        if assignment.due_date < timezone.now():
-            attrs["status"] = AssignmentSubmission.Status.LATE
         return attrs
