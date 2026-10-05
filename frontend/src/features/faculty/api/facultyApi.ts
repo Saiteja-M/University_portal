@@ -16,7 +16,7 @@ export type {
   FacultyCourseAssignmentCreateData,
   FacultyCourseAssignmentUpdateData,
 } from "../types/faculty";
-=========================================================
+/* =========================================================
    Generic API Types
 ========================================================= */
 
