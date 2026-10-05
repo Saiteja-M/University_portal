@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.academics.models import CourseOffering
 from apps.faculty.models import FacultyCourseAssignment
 from apps.students.models import CourseOfferingEnrollment
-from apps.common.permissions import IsAcademicsManager, IsAcademicsViewer
+from apps.academics.permissions import IsAcademicsManager, IsAcademicsViewer
 from .models import TimetableSlot
 from .serializers import TimetableSlotSerializer
 

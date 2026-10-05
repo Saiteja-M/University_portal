@@ -21,6 +21,22 @@ export const examinationsApi = {
   /* ======================================================================== */
 
   student: {
+    exams: async (): Promise<{
+      count: number
+      next: string | null
+      previous: string | null
+      results: Exam[]
+    }> => {
+      const response = await apiClient.get<{
+        count: number
+        next: string | null
+        previous: string | null
+        results: Exam[]
+      }>('/examinations/student/exams/')
+
+      return response.data
+    },
+
     results: async (): Promise<MyResultsResponse> => {
       const response =
         await apiClient.get<MyResultsResponse>(

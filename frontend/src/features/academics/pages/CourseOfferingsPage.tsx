@@ -29,9 +29,9 @@ export default function CourseOfferingsPage() {
   const [error, setError] = useState('')
 
   const offeringsQuery = useCourseOfferings({
-    search: search || undefined,
-    status: status || undefined,
-    section: section || undefined,
+    search,
+    status,
+    section,
     ordering: 'course__code',
   })
   const coursesQuery = useCourses({ is_active: true })

@@ -28,6 +28,9 @@ export const examinationKeys = {
   results: (params?: AdminResultListParams) =>
     [...examinationKeys.all, 'results', params] as const,
 
+  myExaminations: () =>
+    [...examinationKeys.all, 'my-examinations'] as const,
+
   myResults: () =>
     [...examinationKeys.all, 'my-results'] as const,
 
@@ -52,6 +55,13 @@ export function useMyResultsSummary() {
       examinationKeys.myResultsSummary(),
     queryFn:
       examinationsApi.student.resultsSummary,
+  })
+}
+
+export function useMyExaminations() {
+  return useQuery({
+    queryKey: examinationKeys.myExaminations(),
+    queryFn: examinationsApi.student.exams,
   })
 }
 

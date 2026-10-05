@@ -2,14 +2,23 @@ import { apiClient } from "../../../lib/axios";
 
 import type {
   Faculty,
-  FacultyCreateData,
-  FacultyUpdateData,
   FacultyProfile,
-  FacultyProfileCreateData,
-  FacultyProfileUpdateData,
   FacultyQualification,
   FacultyExperience,
   FacultyCourseAssignment,
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
+  FacultyCourseAssignmentCreateData,
+  FacultyCourseAssignmentUpdateData,
+} from "../types/faculty";
+
+export type {
+  FacultyCreateData,
+  FacultyUpdateData,
+  FacultyProfileCreateData,
+  FacultyProfileUpdateData,
   FacultyCourseAssignmentCreateData,
   FacultyCourseAssignmentUpdateData,
 } from "../types/faculty";
