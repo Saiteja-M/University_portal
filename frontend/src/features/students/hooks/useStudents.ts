@@ -302,7 +302,7 @@ export function useUpdateGuardian(
 export function useMyStudentCourses() {
   return useQuery({
     queryKey: [...studentQueryKeys.me(), 'courses'],
-    queryFn: studentsApi.courses,
+    queryFn: studentsApi.myCourses,
   })
 }
 
@@ -442,7 +442,7 @@ export function useUpdateEnrollment(
 // Course offering enrollments
 // -----------------------------------------------------------------------------
 
-export function useCourseOfferingEnrollments(params?: Record<string, string | number | boolean>) {
+export function useCourseOfferingEnrollments(params?: Record<string, string | number | boolean | undefined>) {
   return useQuery({
     queryKey: [...studentQueryKeys.all, 'course-offering-enrollments', params],
     queryFn: () => studentsApi.courseOfferingEnrollments.list(params),
