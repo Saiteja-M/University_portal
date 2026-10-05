@@ -51,6 +51,7 @@ import SemestersPage from '../../features/academics/pages/SemestersPage'
 import CoursesPage from '../../features/academics/pages/CoursesPage'
 import CourseCreatePage from '../../features/academics/pages/CourseCreatePage'
 import CourseOfferingsPage from '../../features/academics/pages/CourseOfferingsPage'
+import TimetablePage from '../../features/timetable/pages/TimetablePage'
 
 // ---------------------------------------------------------
 // Students
