@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .authentication import LoginView
+from .authentication import LoginView, LogoutView
 from .authorization import UserProfilePermissionView
 from .health import HealthCheckView
 from .me import CurrentUserView
@@ -17,6 +17,12 @@ urlpatterns = [
         "auth/login/",
         LoginView.as_view(),
         name="login",
+    ),
+
+    path(
+        "auth/logout/",
+        LogoutView.as_view(),
+        name="logout",
     ),
 
     path(
@@ -50,16 +56,19 @@ urlpatterns = [
         "faculty/",
         include("apps.faculty.urls"),
     ),
+
     path(
         "timetable/",
         include("apps.timetable.urls"),
     ),
+
     path(
         "assignments/",
         include("apps.assignments.urls"),
     ),
+
     path(
-    "examinations/",
-    include("apps.examinations.urls"),
-),
+        "examinations/",
+        include("apps.examinations.urls"),
+    ),
 ]
