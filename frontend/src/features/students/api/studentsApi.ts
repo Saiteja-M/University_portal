@@ -25,6 +25,9 @@ import type {
    ========================================================================== */
 
 export type {
+  CourseOfferingEnrollmentCreateData,
+  CourseOfferingEnrollmentUpdateData,
+  CourseOfferingEnrollment,
   EnrollmentCreateData,
   EnrollmentUpdateData,
   GuardianCreateData,

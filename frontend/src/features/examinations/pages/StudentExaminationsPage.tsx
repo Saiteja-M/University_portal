@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { CalendarDays, Clock3, Search, ShieldCheck } from 'lucide-react'
-import { useMyExaminations } from '../hooks/useExaminations'
+import { useMyExaminations } from '../hooks/useStudentExaminations'
 
 const examTypeLabels: Record<string, string> = {
   MID_I: 'Mid-I',
